@@ -1,0 +1,19 @@
+---
+version: '3'
+
+services:
+    web:
+        build:
+            context: ./docker
+            dockerfile: Dockerfile
+        container_name: translatable
+        environment:
+            - XDEBUG_CONFIG=idekey=PHPSTORM
+            - PHP_IDE_CONFIG=serverName=localhost
+            - APP_ENV=test
+            - DOCROOT=/tests/_support/project/public
+        ports:
+            - 80:80
+        volumes:
+            - .:/var/www/application
+            - ~/.composer:/var/www/.composer
