@@ -1,0 +1,5 @@
+vendor
+composer.lock
+.phpcs-cache
+tests/_support/project/var/cache/*
+tests/_support/project/var/log/*

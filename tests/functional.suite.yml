@@ -1,0 +1,13 @@
+actor: FunctionalTester
+modules:
+    enabled:
+        - Asserts
+        - Tests\FSi\Helper\Functional
+        - Tests\FSi\Module\DbModule
+        - Symfony:
+            app_path: tests/_support/project/src
+            environment: test
+            kernel_class: Tests\FSi\App\Kernel
+        - Doctrine2:
+            depends: Symfony
+            cleanup: true
