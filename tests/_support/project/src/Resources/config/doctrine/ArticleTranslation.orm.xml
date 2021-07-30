@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd"
+>
+    <entity name="Tests\FSi\App\Entity\ArticleTranslation">
+
+        <id name="id" type="integer">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="locale" length="2" />
+        <field name="title" nullable="true" />
+        <field name="description" nullable="true" />
+        <field name="photoPath" nullable="true" />
+
+        <embedded name="author" class="Tests\FSi\App\Entity\Author" />
+
+        <one-to-one field="banner" target-entity="Tests\FSi\App\Entity\Banner" inversed-by="translation">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-one>
+
+        <one-to-many field="comments" target-entity="Tests\FSi\App\Entity\Comment" mapped-by="translation" orphan-removal="true">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+
+        <many-to-one field="article" target-entity="Tests\FSi\App\Entity\Article">
+            <join-column on-delete="CASCADE" />
+        </many-to-one>
+
+    </entity>
+
+</doctrine-mapping>

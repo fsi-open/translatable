@@ -1,0 +1,14 @@
+---
+fsi_files:
+    url_adapters:
+        public: fsi_translatable.url_adapter.public
+    entities:
+        Tests\FSi\App\Entity\ArticleTranslation:
+            prefix: article
+            filesystem: public
+            fields: ['photo']
+
+        Tests\FSi\App\Entity\Banner:
+            prefix: banner
+            filesystem: public
+            fields: ['image']

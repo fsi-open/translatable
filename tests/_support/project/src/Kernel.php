@@ -11,32 +11,40 @@ declare(strict_types=1);
 
 namespace Tests\FSi\App;
 
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
-use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Symfony\Component\Routing\RouteCollectionBuilder;
 
 use function sprintf;
+
+use const PHP_VERSION_ID;
 
 final class Kernel extends HttpKernel\Kernel
 {
     use MicroKernelTrait;
 
+    private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
+
     /**
      * @return array<Bundle>
      */
-    public function registerBundles(): array
+    public function registerBundles(): iterable
     {
-        return [
-            new FrameworkBundle(),
-            new TwigBundle(),
-            new DoctrineBundle()
-        ];
+        $contents = require $this->getProjectDir() . '/config/bundles.php';
+        foreach ($contents as $class => $envs) {
+            if ($envs[$this->environment] ?? $envs['all'] ?? false) {
+                yield new $class();
+            }
+        }
+    }
+
+    public function getProjectDir(): string
+    {
+        return dirname(__DIR__);
     }
 
     public function getCacheDir(): string
@@ -51,39 +59,24 @@ final class Kernel extends HttpKernel\Kernel
 
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
     {
-        $container->loadFromExtension('framework', [
-            'secret' => 'fsi_component_translatable_secret'
-        ]);
+        $configDirectory = $this->getProjectDir() . '/config';
+        $container->addResource(new FileResource($configDirectory . '/bundles.php'));
+        $container->setParameter('container.dumper.inline_class_loader', PHP_VERSION_ID < 70400 || $this->debug);
+        $container->setParameter('container.dumper.inline_factories', true);
 
-        $container->loadFromExtension('twig', [
-            'paths' => [sprintf('%s/../templates', __DIR__)]
-        ]);
+        $loader->load($configDirectory . '/{packages}/*' . self::CONFIG_EXTS, 'glob');
+        $loader->load($configDirectory . '/{packages}/' . $this->environment . '/*' . self::CONFIG_EXTS, 'glob');
+        $loader->load($configDirectory . '/{services}' . self::CONFIG_EXTS, 'glob');
+        $loader->load($configDirectory . '/{services}_' . $this->environment . self::CONFIG_EXTS, 'glob');
 
-        $container->loadFromExtension('doctrine', [
-            'dbal' => [
-                'driver' => 'pdo_sqlite',
-                'user' => 'admin',
-                'charset' => 'UTF8',
-                'path' => sprintf('%s/../var/data.sqlite', __DIR__)
-            ],
-            'orm' => [
-                'auto_generate_proxy_classes' => true,
-                'naming_strategy' => 'doctrine.orm.naming_strategy.underscore',
-                'auto_mapping' => true,
-                'mappings' => [
-                    'shared_kernel' => [
-                        'type' => 'xml',
-                        'dir' => sprintf('%s/Resources/config/doctrine', __DIR__),
-                        'alias' => 'FSi',
-                        'prefix' => 'Tests\FSi\App\Entity',
-                        'is_bundle' => false
-                    ]
-                ]
-            ]
-        ]);
+        $loader->load($configDirectory . '/services.yaml');
     }
 
-    public function configureRoutes(RoutingConfigurator $routes): void
+//    TODO Use this version after dropping Symfony 4.4
+//    protected function configureRoutes(RoutingConfigurator $routes): void
+
+    protected function configureRoutes(RouteCollectionBuilder $routes): void
     {
+        $routes->import("{$this->getProjectDir()}/config/routes.yaml");
     }
 }

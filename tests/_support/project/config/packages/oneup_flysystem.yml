@@ -1,0 +1,11 @@
+---
+oneup_flysystem:
+    adapters:
+        uploaded_adapter:
+            local:
+                directory: '%kernel.project_dir%/public/files'
+    filesystems:
+        public:
+            mount: public
+            adapter: uploaded_adapter
+            alias: League\Flysystem\Filesystem

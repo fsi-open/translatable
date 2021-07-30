@@ -1,0 +1,8 @@
+---
+fsi_translatable:
+    entities:
+        Tests\FSi\App\Entity\Article:
+            fields: [title, description, photo, author, banner, comments]
+            translation:
+                class: Tests\FSi\App\Entity\ArticleTranslation
+                relationField: article

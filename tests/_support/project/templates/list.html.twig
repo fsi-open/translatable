@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <ul>
+        {% for translation in translations %}
+            <li>
+                <ul>
+                    <li>{{ translation.locale }}</li>
+                    <li>{{ translation.title }}</li>
+                    <li>{{ translation.description }}</li>
+                    {% if translation.photo is not null %}
+                        <li>{{ translation.photo|file_url }}</li>
+                    {% endif %}
+                    {% if translation.banner is not null %}
+                        <li>{{ translation.banner.image|file_url }}</li>
+                    {% endif %}
+                    {% if translation.author is not null %}
+                        <li>
+                            {{ translation.author.name }},
+                            {{ translation.author.description }},
+                            {% if translation.author.city is not null %}
+                                {{ translation.author.city.name }}
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                    <li>
+                        {% for comment in translation.comments %}
+                            {{ comment.content }}{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    </li>
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
