@@ -1,0 +1,18 @@
+---
+doctrine:
+    dbal:
+        driver: pdo_sqlite
+        user: admin
+        charset: UTF8
+        path: '%kernel.project_dir%/var/data.sqlite'
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+        mappings:
+            shared_kernel:
+                type: xml
+                dir: '%kernel.project_dir%/src/Resources/config/doctrine'
+                alias: FSi
+                prefix: Tests\FSi\App\Entity
+                is_bundle: false

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>FSi Translations</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+    <script>
+        requirejs.config({
+            paths: {
+                "jquery": "{{ asset('//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min') }}",
+                "collection": "{{ asset('js/collection') }}"
+            }
+        });
+        require(['collection']);
+    </script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        {% block body '' %}
+    </div>
+</body>
+</html>

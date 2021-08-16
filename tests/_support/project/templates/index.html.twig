@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <p>
+            <a href="{{ path('new_article', { _locale: 'en' }) }}">New article EN</a>
+            <a href="{{ path('new_article', { _locale: 'pl' }) }}">New article PL</a>
+            {% if article.id is not null %}
+                <a href="{{ path('list_article_translations', { _locale: 'en', id: article.id }) }}">Translation list EN</a>
+                <a href="{{ path('list_article_translations', { _locale: 'pl', id: article.id }) }}">Translation list PL</a>
+            {% endif %}
+        </p>
+    </div>
+    <div class="row">
+        {% if message is not null %}
+            <p class="col-auto">{{ message|nl2br|raw }}</p>
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col">
+            {% form_theme form 'Form/formTheme.html.twig' %}
+            {{ form_start(form) }}
+            {{ form_rest(form) }}
+            <button>Submit</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "bootstrap_4_layout.html.twig" %}
+
+{% block collection_row -%}
+    {% set force_error = true %}
+    {{ block('form_row') }}
+{% endblock %}
+
+{% block collection_widget %}
+    {% if prototype is defined %}
+        {%- set attr = attr|merge({'data-prototype': block('collection_prototype') }) -%}
+    {% endif %}
+    <div {{ block('widget_container_attributes') }} data-allow-add="{{ allow_add }}" data-allow-delete="{{ allow_delete }}" data-prototype-name="__name__">
+        <div class="collection-items">
+            {%- if form.parent is empty -%}
+                {{ form_errors(form) }}
+            {%- endif -%}
+            {% set collection = form %}
+            {% for form in collection %}
+                {{ block('collection_item') }}
+            {% endfor %}
+            {{- form_rest(form) -}}
+        </div>
+        {% if allow_add %}<button class="btn btn-success collection-add">Add element</button>{% endif %}
+    </div>
+{% endblock %}
+
+{% block collection_prototype -%}
+    {% apply spaceless %}
+        {% set form = prototype %}
+        {{ block('collection_item') }}
+    {% endapply %}
+{%- endblock %}
+
+{% block collection_item %}
+    <div class="form-group">
+        <div>
+            {{ form_widget(form) }}
+            {{ form_errors(form) }}
+        </div>
+        {% if allow_delete %}
+            <div><a class="btn btn-danger collection-remove">Remove element</a></div>
+        {% endif %}
+    </div>
+{% endblock %}

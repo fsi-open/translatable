@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="FSi\Component\Translatable\Entity\TranslationLoader">
+            <argument type="service" id="FSi\Component\Translatable\ConfigurationResolver" />
+            <argument type="service" id="FSi\Component\Translatable\TranslationProvider" />
+            <argument type="service" id="FSi\Component\Translatable\TranslationManager" />
+        </service>
+
+        <service id="FSi\Component\Translatable\Entity\TranslationUpdater">
+            <argument type="service" id="FSi\Component\Translatable\ConfigurationResolver" />
+            <argument type="service" id="FSi\Component\Translatable\TranslationProvider" />
+            <argument type="service" id="FSi\Component\Translatable\TranslationManager" />
+        </service>
+
+        <service id="FSi\Component\Translatable\Entity\TranslationCleaner">
+            <argument type="service" id="FSi\Component\Translatable\TranslationManager" />
+        </service>
+
+        <service id="FSi\Component\Translatable\ConfigurationResolver">
+            <argument key="$configurations" type="collection" />
+        </service>
+
+        <service id="FSi\Component\Translatable\LocaleProvider"
+                 alias="FSi\Component\Translatable\Integration\Symfony\Http\LocaleProvider"
+        />
+
+        <service id="FSi\Component\Translatable\Integration\Symfony\Http\LocaleProvider">
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="session" />
+            <argument key="$defaultLocale" type="string">%kernel.default_locale%</argument>
+        </service>
+
+    </services>
+
+</container>

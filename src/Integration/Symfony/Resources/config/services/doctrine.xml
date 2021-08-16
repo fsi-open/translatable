@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="FSi\Component\Translatable\Integration\Doctrine\ORM\Subscriber\EntitySubscriber">
+            <argument type="service" id="FSi\Component\Translatable\LocaleProvider" />
+            <argument type="service" id="FSi\Component\Translatable\ConfigurationResolver" />
+            <argument type="service" id="FSi\Component\Translatable\Entity\TranslationLoader" />
+            <argument type="service" id="FSi\Component\Translatable\Entity\TranslationUpdater" />
+            <argument type="service" id="FSi\Component\Translatable\Entity\TranslationCleaner" />
+            <tag name="doctrine.event_subscriber" priority="100" />
+        </service>
+
+        <service id="FSi\Component\Translatable\Integration\Doctrine\ORM\TranslationManager">
+            <argument type="service" id="FSi\Component\Translatable\ConfigurationResolver" />
+            <argument type="service" id="Doctrine\Persistence\ManagerRegistry" />
+        </service>
+
+        <service id="FSi\Component\Translatable\TranslationManager"
+                 alias="FSi\Component\Translatable\Integration\Doctrine\ORM\TranslationManager"
+        />
+
+        <service id="FSi\Component\Translatable\Integration\Doctrine\ORM\TranslationProvider">
+            <argument type="service" id="Doctrine\Persistence\ManagerRegistry" />
+            <argument type="service" id="FSi\Component\Translatable\ConfigurationResolver" />
+        </service>
+
+        <service id="FSi\Component\Translatable\TranslationProvider"
+                 alias="FSi\Component\Translatable\Integration\Doctrine\ORM\TranslationProvider"
+        />
+
+    </services>
+
+</container>

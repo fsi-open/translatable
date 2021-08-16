@@ -1,5 +1,8 @@
 vendor
 composer.lock
 .phpcs-cache
+tests/_support/project/public/files/*
+!tests/_support/project/public/files/.gitkeep
 tests/_support/project/var/cache/*
 tests/_support/project/var/log/*
+tests/_support/project/var/data.sqlite

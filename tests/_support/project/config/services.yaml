@@ -1,0 +1,24 @@
+---
+services:
+
+    Tests\FSi\App\Controller\:
+        resource: "../src/Controller/*"
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    fsi_translatable.url_adapter.public:
+        class: FSi\Component\Files\UrlAdapter\BaseUrlAdapter
+        arguments:
+            - '@Psr\Http\Message\UriFactoryInterface'
+            - '/files/'
+
+    Nyholm\Psr7\Factory\Psr17Factory: ~
+    Symfony\Component\HttpClient\Psr18Client: ~
+    Psr\Http\Message\UriFactoryInterface: '@nyholm.psr7.psr17_factory'
+    nyholm.psr7.psr17_factory:
+        class: Nyholm\Psr7\Factory\Psr17Factory
+
+    FSi\Component\Translatable\Integration\Symfony\Http\LocaleProvider:
+        public: true
+        arguments: ['@request_stack', '@session', '%kernel.default_locale%']
