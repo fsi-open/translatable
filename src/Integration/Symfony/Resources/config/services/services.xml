@@ -22,6 +22,7 @@
         </service>
 
         <service id="FSi\Component\Translatable\ConfigurationResolver">
+            <argument key="$classProvider" type="service" id="FSi\Component\Translatable\ClassProvider" />
             <argument key="$configurations" type="collection" />
         </service>
 

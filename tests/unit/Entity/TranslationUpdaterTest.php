@@ -13,8 +13,9 @@ namespace Tests\FSi\Component\Translatable\Entity;
 
 use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
-use FSi\Component\Translatable\Entity\TranslationUpdater;
 use FSi\Component\Translatable\ConfigurationResolver;
+use FSi\Component\Translatable\Entity\TranslationUpdater;
+use FSi\Component\Translatable\Integration\Doctrine\ORM\ClassProvider;
 use FSi\Component\Translatable\TranslatableConfiguration;
 use FSi\Component\Translatable\TranslationManager;
 use FSi\Component\Translatable\TranslationProvider;
@@ -189,15 +190,18 @@ final class TranslationUpdaterTest extends Unit
      */
     protected function _before(): void
     {
-        $this->entityConfigurationResolver = new ConfigurationResolver([
-            new TranslatableConfiguration(
-                Article::class,
-                'locale',
-                ArticleTranslation::class,
-                'locale',
-                'article',
-                ['title', 'description', 'author']
-            )
-        ]);
+        $this->entityConfigurationResolver = new ConfigurationResolver(
+            new ClassProvider(),
+            [
+                new TranslatableConfiguration(
+                    Article::class,
+                    'locale',
+                    ArticleTranslation::class,
+                    'locale',
+                    'article',
+                    ['title', 'description', 'author']
+                )
+            ]
+        );
     }
 }
