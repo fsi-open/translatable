@@ -15,12 +15,13 @@ use Assert\Assertion;
 
 use function array_key_exists;
 use function array_walk;
-use function get_class;
 use function is_array;
 use function iterator_to_array;
 
 final class ConfigurationResolver
 {
+    private ClassProvider $classProvider;
+
     /**
      * @var array<class-string, TranslatableConfiguration>
      */
@@ -34,8 +35,10 @@ final class ConfigurationResolver
     /**
      * @param iterable<TranslatableConfiguration> $configurations
      */
-    public function __construct(iterable $configurations)
+    public function __construct(ClassProvider $classProvider, iterable $configurations)
     {
+        $this->classProvider = $classProvider;
+
         if (false === is_array($configurations)) {
             $configurations = iterator_to_array($configurations);
         }
@@ -59,12 +62,15 @@ final class ConfigurationResolver
 
     public function isTranslatable(object $entity): bool
     {
-        return array_key_exists(get_class($entity), $this->translatableConfigurations);
+        return array_key_exists(
+            $this->classProvider->forObject($entity),
+            $this->translatableConfigurations
+        );
     }
 
     public function resolveTranslatable(object $entity): TranslatableConfiguration
     {
-        $class = get_class($entity);
+        $class = $this->classProvider->forObject($entity);
         Assertion::keyExists(
             $this->translatableConfigurations,
             $class,
@@ -76,7 +82,7 @@ final class ConfigurationResolver
 
     public function resolveTranslation(object $translation): TranslationConfiguration
     {
-        $class = get_class($translation);
+        $class = $this->classProvider->forObject($translation);
         Assertion::keyExists(
             $this->translationConfigurations,
             $class,

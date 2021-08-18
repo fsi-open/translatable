@@ -17,6 +17,8 @@ use FSi\Component\Translatable;
 use FSi\Component\Translatable\ConfigurationResolver;
 use FSi\Component\Translatable\TranslationConfiguration;
 
+use function get_class;
+
 final class TranslationProvider implements Translatable\TranslationProvider
 {
     private ManagerRegistry $managerRegistry;
