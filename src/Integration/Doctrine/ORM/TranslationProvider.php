@@ -30,6 +30,17 @@ final class TranslationProvider implements Translatable\TranslationProvider
         $this->configurationResolver = $configurationResolver;
     }
 
+    public function createForEntityAndLocale(object $entity, string $locale): object
+    {
+        $translationConfiguration = $this->getTranslationConfiguration($entity);
+        $translation = $translationConfiguration->creatNewEntityInstance();
+
+        $translationConfiguration->setLocaleForEntity($translation, $locale);
+        $translationConfiguration->setRelationValueForEntity($translation, $entity);
+
+        return $translation;
+    }
+
     public function findForEntityAndLocale(object $entity, string $locale): ?object
     {
         if (false === $this->entityHasAnIdentifier($entity)) {
