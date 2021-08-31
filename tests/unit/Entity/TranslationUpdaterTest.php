@@ -31,9 +31,11 @@ final class TranslationUpdaterTest extends Unit
     {
         $translatable = new Article('Article', 'Description');
         $translatable->setLocale('en');
+        $translation = new ArticleTranslation('en', null, null, null, $translatable);
 
         /** @var TranslationProvider $translationsProvider */
         $translationsProvider = $this->makeEmpty(TranslationProvider::class, [
+            'createForEntityAndLocale' => Expected::once($translation),
             'findForEntityAndLocale' => Expected::once(null)
         ]);
 
@@ -64,6 +66,7 @@ final class TranslationUpdaterTest extends Unit
 
         /** @var TranslationProvider $translationsProvider */
         $translationsProvider = $this->makeEmpty(TranslationProvider::class, [
+            'createForEntityAndLocale' => Expected::never(),
             'findForEntityAndLocale' => Expected::once($translation)
         ]);
 
@@ -108,6 +111,7 @@ final class TranslationUpdaterTest extends Unit
 
         /** @var TranslationProvider $translationsProvider */
         $translationsProvider = $this->makeEmpty(TranslationProvider::class, [
+            'createForEntityAndLocale' => Expected::never(),
             'findForEntityAndLocale' => Expected::once($translation)
         ]);
 
@@ -141,6 +145,7 @@ final class TranslationUpdaterTest extends Unit
         $translatable->setAuthor($author);
 
         $translationEn = new ArticleTranslation('en', 'Article', 'Description', null, $translatable);
+        $translationPl = new ArticleTranslation('pl', null, null, null, $translatable);
 
         /** @var TranslationProvider $translationsProvider */
         $translationsProvider = $this->makeEmpty(TranslationProvider::class, [
@@ -149,6 +154,7 @@ final class TranslationUpdaterTest extends Unit
                 static fn(object $entity, string $locale): ?object
                     => 'en' === $locale ? $translationEn : null
             ),
+            'createForEntityAndLocale' => Expected::once($translationPl)
         ]);
 
         /** @var TranslationManager $translationManager */

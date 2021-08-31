@@ -13,6 +13,7 @@ namespace FSi\Component\Translatable;
 
 interface TranslationProvider
 {
+    public function createForEntityAndLocale(object $entity, string $locale): object;
     public function findForEntityAndLocale(object $entity, string $locale): ?object;
     /**
      * @param object $entity

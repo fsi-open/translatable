@@ -39,8 +39,6 @@ final class TranslationUpdater
     public function update(object $entity): void
     {
         $translatableConfiguration = $this->configurationResolver->resolveTranslatable($entity);
-        $translationConfiguration = $translatableConfiguration->getTranslationConfiguration();
-
         $locale = $translatableConfiguration->getLocale($entity);
         Assertion::notNull(
             $locale,
@@ -48,18 +46,16 @@ final class TranslationUpdater
         );
 
         $translation = $this->provider->findForEntityAndLocale($entity, $locale);
-
         $shouldNewTranslationBeCreated = null === $translation;
         if (true === $shouldNewTranslationBeCreated) {
-            $translation = $translationConfiguration->creatNewEntityInstance();
+            $translation = $this->provider->createForEntityAndLocale($entity, $locale);
         }
 
         $this->updateTranslationObject(
             $translatableConfiguration->getPropertyConfigurations(),
             $entity,
             $translation,
-            $locale,
-            $translationConfiguration
+            $translatableConfiguration->getTranslationConfiguration()
         );
 
         $isTranslationEmpty = $this->manager->isTranslationEmpty($translation);
@@ -74,7 +70,6 @@ final class TranslationUpdater
      * @param array<PropertyConfiguration> $propertiesConfigurations
      * @param object $entity
      * @param object $translation
-     * @param string $locale
      * @param TranslationConfiguration $translationConfiguration
      * @return void
      */
@@ -82,12 +77,8 @@ final class TranslationUpdater
         array $propertiesConfigurations,
         object $entity,
         object $translation,
-        string $locale,
         TranslationConfiguration $translationConfiguration
     ): void {
-        $translationConfiguration->setLocaleForEntity($translation, $locale);
-        $translationConfiguration->setRelationValueForEntity($translation, $entity);
-
         array_walk(
             $propertiesConfigurations,
             function (PropertyConfiguration $configuration) use (
