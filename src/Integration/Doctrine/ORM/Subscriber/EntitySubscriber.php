@@ -77,6 +77,9 @@ final class EntitySubscriber implements EventSubscriber
         /** @var EntityManagerInterface $manager */
         $manager = $eventArgs->getEntityManager();
         $uow = $manager->getUnitOfWork();
+        if (true === $this->isDeepNestedTransaction($manager)) {
+            return;
+        }
 
         $locale = $this->localeProvider->getLocale();
         $scheduledInsertions = $uow->getScheduledEntityInsertions();
@@ -192,5 +195,10 @@ final class EntitySubscriber implements EventSubscriber
         }
 
         return $this->entityConfigurationResolver->isTranslatable($object);
+    }
+
+    private function isDeepNestedTransaction(EntityManagerInterface $manager): bool
+    {
+        return 1 < $manager->getConnection()->getTransactionNestingLevel();
     }
 }

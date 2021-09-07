@@ -127,7 +127,9 @@ final class TranslationLoaderTest extends Unit
     public function testLoadingFromTranslationIncorrectEntity(): void
     {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('Value "stdClass" is not the same as expected value "Tests\FSi\App\Entity\ArticleTranslation".');
+        self::expectExceptionMessage(
+            'Value "stdClass" is not the same as expected value "Tests\FSi\App\Entity\ArticleTranslation".'
+        );
 
         /** @var TranslationProvider $translationsProvider */
         $translationsProvider = $this->makeEmpty(TranslationProvider::class);
@@ -149,8 +151,8 @@ final class TranslationLoaderTest extends Unit
     {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage(
-            'Object of class "Tests\FSi\App\Entity\Article" has a different '
-            . 'relation object for class "Tests\FSi\App\Entity\Article"'
+            'Object of class "Tests\FSi\App\Entity\ArticleTranslation" has a'
+            . ' different relation object for class "Tests\FSi\App\Entity\Article"'
         );
 
         /** @var TranslationProvider $translationsProvider */

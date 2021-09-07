@@ -68,9 +68,11 @@ final class TranslationLoader
         Assertion::same(
             $entity,
             $translationConfiguration->getRelationValueForEntity($translation),
-            'Object of class "%s" has a different relation object for class "%s"',
-            get_class($translation),
-            get_class($entity)
+            sprintf(
+                'Object of class "%s" has a different relation object for class "%s"',
+                get_class($translation),
+                get_class($entity)
+            )
         );
 
         $locale = $translationConfiguration->getLocaleForEntity($translation);
