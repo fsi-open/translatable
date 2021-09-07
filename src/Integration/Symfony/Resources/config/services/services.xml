@@ -9,6 +9,7 @@
             <argument type="service" id="FSi\Component\Translatable\ConfigurationResolver" />
             <argument type="service" id="FSi\Component\Translatable\TranslationProvider" />
             <argument type="service" id="FSi\Component\Translatable\TranslationManager" />
+            <argument type="service" id="FSi\Component\Translatable\ClassProvider" />
         </service>
 
         <service id="FSi\Component\Translatable\Entity\TranslationUpdater">

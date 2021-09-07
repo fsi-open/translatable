@@ -65,7 +65,7 @@ final class EntitySubscriber implements EventSubscriber
         }
 
         $this->callIterativelyForObjectAndItsEmbbedables(
-            [$this->translationLoader, 'load'],
+            [$this->translationLoader, 'loadFromLocale'],
             [$this->localeProvider->getLocale()],
             $event->getEntityManager(),
             $entity

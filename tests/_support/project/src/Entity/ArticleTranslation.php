@@ -32,7 +32,7 @@ class ArticleTranslation
     private Collection $comments;
 
     public function __construct(
-        string $locale = null,
+        ?string $locale = null,
         ?string $title = null,
         ?string $description = null,
         ?Author $author = null,

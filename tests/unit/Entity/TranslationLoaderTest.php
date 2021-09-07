@@ -19,6 +19,8 @@ use FSi\Component\Translatable\Integration\Doctrine\ORM\ClassProvider;
 use FSi\Component\Translatable\TranslatableConfiguration;
 use FSi\Component\Translatable\TranslationManager;
 use FSi\Component\Translatable\TranslationProvider;
+use InvalidArgumentException;
+use stdClass;
 use Tests\FSi\App\Entity\Article;
 use Tests\FSi\App\Entity\ArticleTranslation;
 use Tests\FSi\App\Entity\Author;
@@ -43,10 +45,11 @@ final class TranslationLoaderTest extends Unit
         $loader = new TranslationLoader(
             $this->entityConfigurationResolver,
             $translationsProvider,
-            $translationManager
+            $translationManager,
+            new ClassProvider()
         );
 
-        $loader->load($translatable, 'en');
+        $loader->loadFromLocale($translatable, 'en');
 
         self::assertSame('en', $translatable->getLocale());
         self::assertSame(null, $translatable->getTitle());
@@ -73,9 +76,10 @@ final class TranslationLoaderTest extends Unit
         $loader = new TranslationLoader(
             $this->entityConfigurationResolver,
             $translationsProvider,
-            $translationManager
+            $translationManager,
+            new ClassProvider()
         );
-        $loader->load($translatable, 'en');
+        $loader->loadFromLocale($translatable, 'en');
 
         self::assertSame('en', $translatable->getLocale());
         self::assertSame('Article', $translatable->getTitle());
@@ -83,6 +87,116 @@ final class TranslationLoaderTest extends Unit
         // Expected returns a different instance of the object passed as a return value,
         // so self::assertSame will not pass.
         self::assertEquals($author, $translatable->getAuthor());
+    }
+
+    public function testLoadingFromTranslation(): void
+    {
+        $author = new Author('John Carpenter', 'Description');
+        $translatable = new Article(null, null);
+
+        /** @var TranslationProvider $translationsProvider */
+        $translationsProvider = $this->makeEmpty(TranslationProvider::class, [
+            'findForEntityAndLocale' => Expected::never()
+        ]);
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = $this->makeEmpty(TranslationManager::class, [
+            'sanitizeTranslationValue' => Expected::exactly(3, static fn($value) => $value)
+        ]);
+
+        $loader = new TranslationLoader(
+            $this->entityConfigurationResolver,
+            $translationsProvider,
+            $translationManager,
+            new ClassProvider()
+        );
+
+        $loader->loadFromTranslation(
+            $translatable,
+            new ArticleTranslation('en', 'Article', 'Description', $author, $translatable)
+        );
+
+        self::assertSame('en', $translatable->getLocale());
+        self::assertSame('Article', $translatable->getTitle());
+        self::assertSame('Description', $translatable->getDescription());
+        // Expected returns a different instance of the object passed as a return value,
+        // so self::assertSame will not pass.
+        self::assertEquals($author, $translatable->getAuthor());
+    }
+
+    public function testLoadingFromTranslationIncorrectEntity(): void
+    {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Value "stdClass" is not the same as expected value "Tests\FSi\App\Entity\ArticleTranslation".');
+
+        /** @var TranslationProvider $translationsProvider */
+        $translationsProvider = $this->makeEmpty(TranslationProvider::class);
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = $this->makeEmpty(TranslationManager::class);
+
+        $loader = new TranslationLoader(
+            $this->entityConfigurationResolver,
+            $translationsProvider,
+            $translationManager,
+            new ClassProvider()
+        );
+
+        $loader->loadFromTranslation(new Article(null, null), new stdClass());
+    }
+
+    public function testLoadingFromTranslationForDifferentEntity(): void
+    {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage(
+            'Object of class "Tests\FSi\App\Entity\Article" has a different '
+            . 'relation object for class "Tests\FSi\App\Entity\Article"'
+        );
+
+        /** @var TranslationProvider $translationsProvider */
+        $translationsProvider = $this->makeEmpty(TranslationProvider::class);
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = $this->makeEmpty(TranslationManager::class);
+
+        $loader = new TranslationLoader(
+            $this->entityConfigurationResolver,
+            $translationsProvider,
+            $translationManager,
+            new ClassProvider()
+        );
+
+        $loader->loadFromTranslation(
+            new Article(null, null),
+            new ArticleTranslation('en', 'Article', 'Description', null, new Article())
+        );
+    }
+
+    public function testLoadingFromTranslationWithoutALocale(): void
+    {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage(
+            'No locale for entity "Tests\FSi\App\Entity\ArticleTranslation"'
+        );
+
+        /** @var TranslationProvider $translationsProvider */
+        $translationsProvider = $this->makeEmpty(TranslationProvider::class);
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = $this->makeEmpty(TranslationManager::class);
+
+        $loader = new TranslationLoader(
+            $this->entityConfigurationResolver,
+            $translationsProvider,
+            $translationManager,
+            new ClassProvider()
+        );
+
+        $entity = new Article(null, null);
+        $loader->loadFromTranslation(
+            $entity,
+            new ArticleTranslation(null, 'Article', 'Description', null, $entity)
+        );
     }
 
     /**
