@@ -225,7 +225,7 @@ final class EntitySubscriber implements EventSubscriber
         );
 
         $translatableConfiguration = $this->entityConfigurationResolver->resolveTranslatable($entity);
-        if (null !== $translatableConfiguration->getLocale($entity)) {
+        if ($translatableConfiguration->getLocale($entity) !== $translationLocale) {
             return;
         }
 
