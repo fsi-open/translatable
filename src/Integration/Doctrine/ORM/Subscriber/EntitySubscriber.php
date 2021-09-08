@@ -133,10 +133,13 @@ final class EntitySubscriber implements EventSubscriber
 
     public function onFlush(OnFlushEventArgs $event): void
     {
-        $locale = $this->localeProvider->getLocale();
         $manager = $event->getEntityManager();
-        $uow = $manager->getUnitOfWork();
+        if (true === $this->isDeepNestedTransaction($manager)) {
+            return;
+        }
 
+        $locale = $this->localeProvider->getLocale();
+        $uow = $manager->getUnitOfWork();
         $scheduledInsertions = $uow->getScheduledEntityInsertions();
         array_walk(
             $scheduledInsertions,
