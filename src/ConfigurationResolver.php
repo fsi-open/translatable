@@ -68,6 +68,14 @@ final class ConfigurationResolver
         );
     }
 
+    public function isTranslation(object $entity): bool
+    {
+        return array_key_exists(
+            $this->classProvider->forObject($entity),
+            $this->translationConfigurations
+        );
+    }
+
     public function resolveTranslatable(object $entity): TranslatableConfiguration
     {
         $class = $this->classProvider->forObject($entity);
