@@ -81,9 +81,19 @@ final class TranslationConfiguration
         return $this->relationField;
     }
 
+    public function getLocaleForEntity(object $entity): ?string
+    {
+        return $this->getLocaleReflectionForProperty()->getValue($entity);
+    }
+
     public function setLocaleForEntity(object $entity, string $locale): void
     {
         $this->getLocaleReflectionForProperty()->setValue($entity, $locale);
+    }
+
+    public function getRelationValueForEntity(object $entity): ?object
+    {
+        return $this->getRelationReflectionForProperty()->getValue($entity);
     }
 
     public function setRelationValueForEntity(object $entity, object $relation): void

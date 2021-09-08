@@ -11,17 +11,19 @@ declare(strict_types=1);
 
 namespace FSi\Component\Translatable\Integration\Doctrine\ORM\Subscriber;
 
+use Assert\Assertion;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Persistence\Proxy;
+use FSi\Component\Translatable\ConfigurationResolver;
 use FSi\Component\Translatable\Entity\TranslationCleaner;
 use FSi\Component\Translatable\Entity\TranslationLoader;
 use FSi\Component\Translatable\Entity\TranslationUpdater;
-use FSi\Component\Translatable\ConfigurationResolver;
 use FSi\Component\Translatable\LocaleProvider;
 
 use function array_walk;
@@ -54,7 +56,7 @@ final class EntitySubscriber implements EventSubscriber
      */
     public function getSubscribedEvents(): array
     {
-        return [Events::postLoad, Events::preFlush, Events::preRemove];
+        return [Events::postLoad, Events::preRemove, Events::preFlush, Events::onFlush];
     }
 
     public function postLoad(LifecycleEventArgs $event): void
@@ -65,11 +67,21 @@ final class EntitySubscriber implements EventSubscriber
         }
 
         $this->callIterativelyForObjectAndItsEmbbedables(
-            [$this->translationLoader, 'load'],
+            [$this->translationLoader, 'loadFromLocale'],
             [$this->localeProvider->getLocale()],
             $event->getEntityManager(),
             $entity
         );
+    }
+
+    public function preRemove(LifecycleEventArgs $event): void
+    {
+        $object = $event->getEntity();
+        if (false === $this->isTranslatable($object)) {
+            return;
+        }
+
+        $this->translationCleaner->clean($object);
     }
 
     public function preFlush(PreFlushEventArgs $eventArgs): void
@@ -77,6 +89,9 @@ final class EntitySubscriber implements EventSubscriber
         /** @var EntityManagerInterface $manager */
         $manager = $eventArgs->getEntityManager();
         $uow = $manager->getUnitOfWork();
+        if (true === $this->isDeepNestedTransaction($manager)) {
+            return;
+        }
 
         $locale = $this->localeProvider->getLocale();
         $scheduledInsertions = $uow->getScheduledEntityInsertions();
@@ -116,14 +131,22 @@ final class EntitySubscriber implements EventSubscriber
         });
     }
 
-    public function preRemove(LifecycleEventArgs $event): void
+    public function onFlush(OnFlushEventArgs $event): void
     {
-        $object = $event->getEntity();
-        if (false === $this->isTranslatable($object)) {
+        $manager = $event->getEntityManager();
+        if (true === $this->isDeepNestedTransaction($manager)) {
             return;
         }
 
-        $this->translationCleaner->clean($object);
+        $locale = $this->localeProvider->getLocale();
+        $uow = $manager->getUnitOfWork();
+        $scheduledInsertions = $uow->getScheduledEntityInsertions();
+        array_walk(
+            $scheduledInsertions,
+            function (object $entity) use ($manager, $locale): void {
+                $this->initializeEmptyTranslatableForNewTranslation($manager, $entity, $locale);
+            }
+        );
     }
 
     /**
@@ -175,6 +198,45 @@ final class EntitySubscriber implements EventSubscriber
         );
     }
 
+    private function initializeEmptyTranslatableForNewTranslation(
+        EntityManagerInterface $manager,
+        object $translation,
+        string $locale
+    ): void {
+        if (false === $this->isTranslation($translation)) {
+            return;
+        }
+
+        $translationConfiguration = $this->entityConfigurationResolver->resolveTranslation($translation);
+        $translationLocale = $translationConfiguration->getLocaleForEntity($translation);
+        Assertion::notNull(
+            $translationLocale,
+            sprintf('No locale for translation of class "%s".', get_class($translation))
+        );
+
+        if ($translationLocale !== $locale) {
+            return;
+        }
+
+        $entity = $translationConfiguration->getRelationValueForEntity($translation);
+        Assertion::notNull(
+            $entity,
+            sprintf('No relation entity for translation of class "%s".', get_class($translation))
+        );
+
+        $translatableConfiguration = $this->entityConfigurationResolver->resolveTranslatable($entity);
+        if (null !== $translatableConfiguration->getLocale($entity)) {
+            return;
+        }
+
+        $this->callIterativelyForObjectAndItsEmbbedables(
+            [$this->translationLoader, 'loadFromTranslation'],
+            [$translation],
+            $manager,
+            $entity
+        );
+    }
+
     private function setEntityLocaleIfIsNull(object $entity, string $locale): void
     {
         $configuration = $this->entityConfigurationResolver->resolveTranslatable($entity);
@@ -185,12 +247,27 @@ final class EntitySubscriber implements EventSubscriber
         $configuration->setLocale($entity, $locale);
     }
 
+    private function isDeepNestedTransaction(EntityManagerInterface $manager): bool
+    {
+        return 1 < $manager->getConnection()->getTransactionNestingLevel();
+    }
+
     private function isTranslatable(object $object): bool
+    {
+        $this->initializeProxy($object);
+        return $this->entityConfigurationResolver->isTranslatable($object);
+    }
+
+    private function isTranslation(object $object): bool
+    {
+        $this->initializeProxy($object);
+        return $this->entityConfigurationResolver->isTranslation($object);
+    }
+
+    private function initializeProxy(object $object): void
     {
         if (true === $object instanceof Proxy && false === $object->__isInitialized()) {
             $object->__load();
         }
-
-        return $this->entityConfigurationResolver->isTranslatable($object);
     }
 }
