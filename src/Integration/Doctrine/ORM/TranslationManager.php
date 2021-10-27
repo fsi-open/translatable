@@ -131,7 +131,7 @@ final class TranslationManager implements Translatable\TranslationManager
             $sanitizedValue = $value;
         }
 
-        return $value;
+        return $sanitizedValue;
     }
 
     public function sanitizeTranslatableValue(

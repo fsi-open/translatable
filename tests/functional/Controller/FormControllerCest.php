@@ -193,6 +193,30 @@ final class FormControllerCest
                 $translationPl->getComments()
             )
         );
+
+        $I->submitForm('[name="article"]', [
+            'article' => [
+                'title' => 'Tytuł',
+                'description' => 'Opis',
+                'publicationDate' => '2021-07-02',
+                'author' => [
+                    'name' => 'Henryk Marowski',
+                    'description' => 'Opis'
+                ],
+                'comments' => [
+                    ['content' => 'Komentarz 1'],
+                    ['content' => 'Komentarz 2'],
+                    ['content' => 'Komentarz 3']
+                ]
+            ]
+        ], 'Submit');
+
+        /** @var ArticleTranslation $translationPl */
+        $translationPl = $I->grabEntityFromRepository(ArticleTranslation::class, [
+            'locale' => 'pl'
+        ]);
+
+        $I->assertCount(3, $translationPl->getComments());
     }
 
     public function testOnlyEmbeddables(FunctionalTester $I): void
