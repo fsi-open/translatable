@@ -19,11 +19,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Tests\FSi\App\Controller\Traits\FormatFormErrors;
-use Tests\FSi\App\Entity\Article;
-use Tests\FSi\App\Form\ArticleType;
+use Tests\FSi\App\Entity\HomePage;
+use Tests\FSi\App\Form\HomePageType;
 use Twig\Environment;
 
-final class FormController
+final class InheritanceController
 {
     use FormatFormErrors;
 
@@ -46,38 +46,38 @@ final class FormController
 
     public function __invoke(Request $request, ?int $id): Response
     {
-        $article = $this->getArticle($id);
-        $form = $this->formFactory->create(ArticleType::class, $article);
+        $homePage = $this->getHomePage($id);
+        $form = $this->formFactory->create(HomePageType::class, $homePage);
         $form->handleRequest($request);
         if (true === $form->isSubmitted() && true === $form->isValid()) {
-            if (false === $this->manager->contains($article)) {
-                $this->manager->persist($article);
+            if (false === $this->manager->contains($homePage)) {
+                $this->manager->persist($homePage);
             }
 
             $this->manager->flush();
             return new RedirectResponse(
-                $this->urlGenerator->generate('edit_article', ['id' => $article->getId()])
+                $this->urlGenerator->generate('edit_inheritance', ['id' => $homePage->getId()])
             );
         }
 
         return new Response(
-            $this->twig->render('index.html.twig', [
-                'article' => $article,
+            $this->twig->render('inheritance.html.twig', [
+                'homepage' => $homePage,
                 'form' => $form->createView(),
                 'message' => $this->formErrorsToMessage($form->getErrors(true))
             ])
         );
     }
 
-    private function getArticle(?int $id): Article
+    private function getHomePage(?int $id): HomePage
     {
         if (null !== $id) {
-            $article = $this->manager->getRepository(Article::class)->find($id);
-            Assertion::isInstanceOf($article, Article::class, "No article for id \"{$id}\"");
+            $homepage = $this->manager->getRepository(HomePage::class)->find($id);
+            Assertion::isInstanceOf($homepage, HomePage::class, "No home page for id \"{$id}\"");
         } else {
-            $article = new Article(null, null);
+            $homepage = new HomePage();
         }
 
-        return $article;
+        return $homepage;
     }
 }

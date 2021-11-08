@@ -12,7 +12,12 @@ declare(strict_types=1);
 namespace FSi\Component\Translatable;
 
 use Assert\Assertion;
+use ReflectionClass;
 use ReflectionProperty;
+
+use function array_reduce;
+use function class_parents;
+use function property_exists;
 
 final class PropertyConfiguration
 {
@@ -29,8 +34,7 @@ final class PropertyConfiguration
      */
     public function __construct(string $entityClass, string $propertyName)
     {
-        Assertion::propertyExists($entityClass, $propertyName);
-
+        $this->verifyPropertyExists($entityClass, $propertyName);
         $this->entityClass = $entityClass;
         $this->propertyName = $propertyName;
         $this->propertyReflection = null;
@@ -65,10 +69,54 @@ final class PropertyConfiguration
     private function getPropertyReflection(): ReflectionProperty
     {
         if (null === $this->propertyReflection) {
-            $this->propertyReflection = new ReflectionProperty($this->entityClass, $this->propertyName);
-            $this->propertyReflection->setAccessible(true);
+            $reflectionClass = new ReflectionClass($this->entityClass);
+            do {
+                if (false === $reflectionClass->hasProperty($this->propertyName)) {
+                    continue;
+                }
+
+                $this->propertyReflection = $reflectionClass->getProperty($this->propertyName);
+                $this->propertyReflection->setAccessible(true);
+            } while ($reflectionClass = $reflectionClass->getParentClass());
         }
 
+        Assertion::notNull(
+            $this->propertyReflection,
+            $this->nonExistantFieldExceptionMessage($this->entityClass, $this->propertyName)
+        );
+
         return $this->propertyReflection;
+    }
+
+    /**
+     * @param class-string $entityClass
+     * @param string $propertyName
+     * @return void
+     */
+    private function verifyPropertyExists(string $entityClass, string $propertyName): void
+    {
+        if (true === property_exists($entityClass, $propertyName)) {
+            return;
+        }
+
+        $parents = class_parents($entityClass);
+        Assertion::isArray($parents, "Unable to read parent classes for \"{$entityClass}\"");
+
+        $propertyExistsInAParent = array_reduce(
+            $parents,
+            fn(bool $accumulator, string $parent): bool =>
+                true === $accumulator || property_exists($parent, $propertyName),
+            false
+        );
+
+        Assertion::true(
+            $propertyExistsInAParent,
+            $this->nonExistantFieldExceptionMessage($entityClass, $propertyName)
+        );
+    }
+
+    private function nonExistantFieldExceptionMessage(string $entityClass, string $propertyName): string
+    {
+        return "Neiter class \"{$entityClass}\" nor any of it's parent have the property \"{$propertyName}\"";
     }
 }

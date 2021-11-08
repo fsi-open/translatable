@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'Form/formTheme.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        {% if message is not null %}
+            <p class="col-auto">{{ message|nl2br|raw }}</p>
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form_start(form) }}
+                {{ form_rest(form) }}
+                <button>Submit</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

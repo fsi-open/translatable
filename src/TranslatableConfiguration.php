@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace FSi\Component\Translatable;
 
-use ReflectionProperty;
-
 final class TranslatableConfiguration
 {
     /**
@@ -21,7 +19,7 @@ final class TranslatableConfiguration
     private string $translatableClass;
     private string $localeField;
     private TranslationConfiguration $translationsConfiguration;
-    private ?ReflectionProperty $localeFieldReflection;
+    private ?PropertyConfiguration $localeFieldReflection;
     /**
      * @var array<PropertyConfiguration>
      */
@@ -68,12 +66,12 @@ final class TranslatableConfiguration
 
     public function getLocale(object $entity): ?string
     {
-        return $this->getLocaleFieldReflection()->getValue($entity);
+        return $this->getLocaleFieldReflection()->getValueForEntity($entity);
     }
 
     public function setLocale(object $entity, string $locale): void
     {
-        $this->getLocaleFieldReflection()->setValue($entity, $locale);
+        $this->getLocaleFieldReflection()->setValueForEntity($entity, $locale);
     }
 
     public function getTranslationConfiguration(): TranslationConfiguration
@@ -89,14 +87,13 @@ final class TranslatableConfiguration
         return $this->propertyConfigurations;
     }
 
-    private function getLocaleFieldReflection(): ReflectionProperty
+    private function getLocaleFieldReflection(): PropertyConfiguration
     {
         if (null === $this->localeFieldReflection) {
-            $this->localeFieldReflection = new ReflectionProperty(
+            $this->localeFieldReflection = new PropertyConfiguration(
                 $this->translatableClass,
                 $this->localeField
             );
-            $this->localeFieldReflection->setAccessible(true);
         }
 
         return $this->localeFieldReflection;

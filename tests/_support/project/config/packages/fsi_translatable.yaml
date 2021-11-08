@@ -6,3 +6,15 @@ fsi_translatable:
             translation:
                 class: Tests\FSi\App\Entity\ArticleTranslation
                 relationField: article
+
+        Tests\FSi\App\Entity\Page:
+            fields: [title, description]
+            translation:
+                class: Tests\FSi\App\Entity\PageTranslation
+                relationField: page
+
+        Tests\FSi\App\Entity\HomePage:
+            fields: [title, description, preface]
+            translation:
+                class: Tests\FSi\App\Entity\HomePageTranslation
+                relationField: page
