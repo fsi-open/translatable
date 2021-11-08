@@ -13,7 +13,6 @@ namespace FSi\Component\Translatable;
 
 use Assert\Assertion;
 use ReflectionClass;
-use ReflectionProperty;
 
 use function array_walk;
 
@@ -25,8 +24,8 @@ final class TranslationConfiguration
     private string $entityClass;
     private string $localeField;
     private string $relationField;
-    private ?ReflectionProperty $localePropertyReflection;
-    private ?ReflectionProperty $relationPropertyReflection;
+    private ?PropertyConfiguration $localePropertyReflection;
+    private ?PropertyConfiguration $relationPropertyReflection;
     /**
      * @var array<string, PropertyConfiguration>
      */
@@ -83,22 +82,22 @@ final class TranslationConfiguration
 
     public function getLocaleForEntity(object $entity): ?string
     {
-        return $this->getLocaleReflectionForProperty()->getValue($entity);
+        return $this->getLocaleReflectionForProperty()->getValueForEntity($entity);
     }
 
     public function setLocaleForEntity(object $entity, string $locale): void
     {
-        $this->getLocaleReflectionForProperty()->setValue($entity, $locale);
+        $this->getLocaleReflectionForProperty()->setValueForEntity($entity, $locale);
     }
 
     public function getRelationValueForEntity(object $entity): ?object
     {
-        return $this->getRelationReflectionForProperty()->getValue($entity);
+        return $this->getRelationReflectionForProperty()->getValueForEntity($entity);
     }
 
     public function setRelationValueForEntity(object $entity, object $relation): void
     {
-        $this->getRelationReflectionForProperty()->setValue($entity, $relation);
+        $this->getRelationReflectionForProperty()->setValueForEntity($entity, $relation);
     }
 
     /**
@@ -132,21 +131,25 @@ final class TranslationConfiguration
         return $this->propertyConfigurations;
     }
 
-    private function getLocaleReflectionForProperty(): ReflectionProperty
+    private function getLocaleReflectionForProperty(): PropertyConfiguration
     {
         if (null === $this->localePropertyReflection) {
-            $this->localePropertyReflection = new ReflectionProperty($this->entityClass, $this->localeField);
-            $this->localePropertyReflection->setAccessible(true);
+            $this->localePropertyReflection = new PropertyConfiguration(
+                $this->entityClass,
+                $this->localeField
+            );
         }
 
         return $this->localePropertyReflection;
     }
 
-    private function getRelationReflectionForProperty(): ReflectionProperty
+    private function getRelationReflectionForProperty(): PropertyConfiguration
     {
         if (null === $this->relationPropertyReflection) {
-            $this->relationPropertyReflection = new ReflectionProperty($this->entityClass, $this->relationField);
-            $this->relationPropertyReflection->setAccessible(true);
+            $this->relationPropertyReflection = new PropertyConfiguration(
+                $this->entityClass,
+                $this->relationField
+            );
         }
 
         return $this->relationPropertyReflection;

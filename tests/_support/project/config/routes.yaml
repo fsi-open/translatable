@@ -28,3 +28,17 @@ list_article_translations:
     controller: Tests\FSi\App\Controller\ListController
     requirements:
         id: '\d'
+
+inheritance:
+    path:
+        en: /inheritance
+        pl: /dziedziczenie
+    controller: Tests\FSi\App\Controller\InheritanceController
+
+edit_inheritance:
+    path:
+        en: /inheritance/{id}
+        pl: /dziedziczenie/{id}
+    controller: Tests\FSi\App\Controller\InheritanceController
+    requirements:
+        id: '\d'

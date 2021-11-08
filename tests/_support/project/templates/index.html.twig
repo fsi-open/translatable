@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% form_theme form 'Form/formTheme.html.twig' %}
+
 {% block body %}
     <div class="row">
         <p>
@@ -18,10 +20,9 @@
     </div>
     <div class="row">
         <div class="col">
-            {% form_theme form 'Form/formTheme.html.twig' %}
             {{ form_start(form) }}
-            {{ form_rest(form) }}
-            <button>Submit</button>
+                {{ form_rest(form) }}
+                <button>Submit</button>
             {{ form_end(form) }}
         </div>
     </div>
