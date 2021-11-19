@@ -23,6 +23,8 @@ services:
     nyholm.psr7.psr17_factory:
         class: Nyholm\Psr7\Factory\Psr17Factory
 
-    FSi\Component\Translatable\Integration\Symfony\Http\LocaleProvider:
+    Tests\FSi\App\Http\LocaleProvider:
         public: true
-        arguments: ['@request_stack', '@session', '%kernel.default_locale%']
+
+    FSi\Component\Translatable\LocaleProvider:
+        alias: Tests\FSi\App\Http\LocaleProvider

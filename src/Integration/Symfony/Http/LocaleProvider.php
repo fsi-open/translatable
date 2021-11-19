@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Component\Translatable\Integration\Symfony\Http;
 
+use Assert\Assertion;
 use FSi\Component\Translatable;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -20,16 +21,11 @@ final class LocaleProvider implements Translatable\LocaleProvider
     private const SESSION_KEY = 'fsi_translatable.locale';
 
     private RequestStack $requestStack;
-    private SessionInterface $session;
     private string $defaultLocale;
 
-    public function __construct(
-        RequestStack $requestStack,
-        SessionInterface $session,
-        string $defaultLocale
-    ) {
+    public function __construct(RequestStack $requestStack, string $defaultLocale)
+    {
         $this->requestStack = $requestStack;
-        $this->session = $session;
         $this->defaultLocale = $defaultLocale;
     }
 
@@ -50,23 +46,37 @@ final class LocaleProvider implements Translatable\LocaleProvider
 
     private function getSavedLocale(): ?string
     {
-        return $this->getSession()->get(self::SESSION_KEY);
+        $session = $this->getSession();
+        if (null === $session) {
+            return null;
+        }
+
+        return $session->get(self::SESSION_KEY);
     }
 
     public function setLocale(string $locale): void
     {
-        $this->getSession()->set(self::SESSION_KEY, $locale);
+        $session = $this->getSession();
+        Assertion::notNull($session, "There is no session in which to save the locale in!");
+
+        $session->set(self::SESSION_KEY, $locale);
     }
 
     public function clearSavedLocale(): void
     {
-        $this->getSession()->remove(self::SESSION_KEY);
+        $session = $this->getSession();
+        Assertion::notNull($session, "There is no session to clear locale from!");
+
+        $session->remove(self::SESSION_KEY);
     }
 
-    private function getSession(): SessionInterface
+    private function getSession(): ?SessionInterface
     {
-//        TODO use after dropping Symfony 4.4
-//        return $this->requestStack->getSession();
-        return $this->session;
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        if (null === $currentRequest) {
+            return null;
+        }
+
+        return $currentRequest->getSession();
     }
 }

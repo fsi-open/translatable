@@ -14,7 +14,7 @@ namespace Tests\FSi\Module;
 use Codeception\Module;
 use Codeception\Module\Symfony;
 use Codeception\TestInterface;
-use FSi\Component\Translatable\Integration\Symfony\Http\LocaleProvider;
+use Tests\FSi\App\Http\LocaleProvider;
 
 final class TranslationsModule extends Module
 {
