@@ -29,6 +29,34 @@ final class TranslationLoaderTest extends Unit
 {
     private ConfigurationResolver $entityConfigurationResolver;
 
+    public function testSkippedLoadingOnNullLocale(): void
+    {
+        /** @var TranslationProvider $translationsProvider */
+        $translationsProvider = $this->makeEmpty(TranslationProvider::class, [
+            'findForEntityAndLocale' => Expected::never()
+        ]);
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = $this->makeEmpty(TranslationManager::class, [
+            'sanitizeTranslationValue' => Expected::never()
+        ]);
+
+        $translatable = new Article(null, null);
+        $loader = new TranslationLoader(
+            $this->entityConfigurationResolver,
+            $translationsProvider,
+            $translationManager,
+            new ClassProvider()
+        );
+
+        $loader->loadFromLocale($translatable, null);
+
+        self::assertNull($translatable->getLocale());
+        self::assertNull($translatable->getTitle());
+        self::assertNull($translatable->getDescription());
+        self::assertNull($translatable->getAuthor());
+    }
+
     public function testTranslationDoesNotExist(): void
     {
         /** @var TranslationProvider $translationsProvider */
@@ -52,9 +80,9 @@ final class TranslationLoaderTest extends Unit
         $loader->loadFromLocale($translatable, 'en');
 
         self::assertSame('en', $translatable->getLocale());
-        self::assertSame(null, $translatable->getTitle());
-        self::assertSame(null, $translatable->getDescription());
-        self::assertSame(null, $translatable->getAuthor());
+        self::assertNull($translatable->getTitle());
+        self::assertNull($translatable->getDescription());
+        self::assertNull($translatable->getAuthor());
     }
 
     public function testTranslationExists(): void

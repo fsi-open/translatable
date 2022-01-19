@@ -42,6 +42,16 @@ final class TranslationsModule extends Module
         $this->clearSavedLocale();
     }
 
+    public function enableLocaleProvider(): void
+    {
+        $this->getLocaleProvider()->enable();
+    }
+
+    public function disableLocaleProvider(): void
+    {
+        $this->getLocaleProvider()->disable();
+    }
+
     public function setLocale(string $locale): void
     {
         $this->getLocaleProvider()->setLocale($locale);

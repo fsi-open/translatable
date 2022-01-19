@@ -94,10 +94,14 @@ final class EntitySubscriber implements EventSubscriber
         }
 
         $locale = $this->localeProvider->getLocale();
+        if (null === $locale) {
+            return;
+        }
+
         $scheduledInsertions = $uow->getScheduledEntityInsertions();
         array_walk(
             $scheduledInsertions,
-            function (object $entity, $key, string $locale) use ($manager): void {
+            function (object $entity, string $key, string $locale) use ($manager): void {
                 if (false === $this->isTranslatable($entity)) {
                     return;
                 }
@@ -139,6 +143,10 @@ final class EntitySubscriber implements EventSubscriber
         }
 
         $locale = $this->localeProvider->getLocale();
+        if (null === $locale) {
+            return;
+        }
+
         $uow = $manager->getUnitOfWork();
         $scheduledInsertions = $uow->getScheduledEntityInsertions();
         array_walk(

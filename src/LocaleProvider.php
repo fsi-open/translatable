@@ -13,5 +13,7 @@ namespace FSi\Component\Translatable;
 
 interface LocaleProvider
 {
-    public function getLocale(): string;
+    public function getLocale(): ?string;
+    public function enable(): void;
+    public function disable(): void;
 }

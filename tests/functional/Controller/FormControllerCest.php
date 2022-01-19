@@ -219,6 +219,33 @@ final class FormControllerCest
         $I->assertCount(3, $translationPl->getComments());
     }
 
+    public function testLocaleDisabled(FunctionalTester $I): void
+    {
+        $I->amOnPage('/');
+
+        $I->disableLocaleProvider();
+        $I->submitForm('[name="article"]', [
+            'article' => [
+                'title' => '',
+                'description' => '',
+                'publicationDate' => '2021-07-01',
+                'author' => [
+                    'name' => 'Henry Hortinson',
+                    'description' => 'Description',
+                    'city' => ['name' => 'New York']
+                ],
+                'comments' => []
+            ]
+        ], 'Submit');
+
+        $I->seeCurrentUrlEquals('/1');
+        $I->seeResponseCodeIs(200);
+
+        $I->dontSeeInRepository(ArticleTranslation::class);
+
+        $I->enableLocaleProvider();
+    }
+
     public function testOnlyEmbeddables(FunctionalTester $I): void
     {
         $I->amOnPage('/');

@@ -17,7 +17,8 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class LocaleProvider implements Translatable\LocaleProvider
 {
-    private const SESSION_KEY = 'fsi_translatable.locale';
+    private const LOCALE_SESSION_KEY = 'fsi_translatable.locale';
+    private const DISABLE_SESSION_KEY = 'fsi_translatable.disabled';
 
     private RequestStack $requestStack;
     private SessionInterface $session;
@@ -33,8 +34,12 @@ final class LocaleProvider implements Translatable\LocaleProvider
         $this->defaultLocale = $defaultLocale;
     }
 
-    public function getLocale(): string
+    public function getLocale(): ?string
     {
+        if (true === $this->isDisabled()) {
+            return null;
+        }
+
         $savedLocale = $this->getSavedLocale();
         if (null !== $savedLocale) {
             return $savedLocale;
@@ -48,19 +53,34 @@ final class LocaleProvider implements Translatable\LocaleProvider
         return $this->defaultLocale;
     }
 
+    public function enable(): void
+    {
+        $this->getSession()->set(self::DISABLE_SESSION_KEY, false);
+    }
+
+    public function disable(): void
+    {
+        $this->getSession()->set(self::DISABLE_SESSION_KEY, true);
+    }
+
     private function getSavedLocale(): ?string
     {
-        return $this->getSession()->get(self::SESSION_KEY);
+        return $this->getSession()->get(self::LOCALE_SESSION_KEY);
     }
 
     public function setLocale(string $locale): void
     {
-        $this->getSession()->set(self::SESSION_KEY, $locale);
+        $this->getSession()->set(self::LOCALE_SESSION_KEY, $locale);
     }
 
     public function clearSavedLocale(): void
     {
-        $this->getSession()->remove(self::SESSION_KEY);
+        $this->getSession()->remove(self::LOCALE_SESSION_KEY);
+    }
+
+    private function isDisabled(): bool
+    {
+        return $this->getSession()->get(self::DISABLE_SESSION_KEY, false);
     }
 
     private function getSession(): SessionInterface

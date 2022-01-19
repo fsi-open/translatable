@@ -42,8 +42,12 @@ final class TranslationLoader
         $this->classProvider = $classProvider;
     }
 
-    public function loadFromLocale(object $entity, string $locale): void
+    public function loadFromLocale(object $entity, ?string $locale): void
     {
+        if (null === $locale) {
+            return;
+        }
+
         $translatableConfiguration = $this->configurationResolver->resolveTranslatable($entity);
         $translatableConfiguration->setLocale($entity, $locale);
 
