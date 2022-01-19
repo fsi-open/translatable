@@ -44,6 +44,10 @@ final class TranslationUpdater
             $locale,
             "No locale set for entity of class \"{$translatableConfiguration->getEntityClass()}\""
         );
+        Assertion::false(
+            $translatableConfiguration->isDisabledAutoTranslationsUpdate(),
+            "\"{$translatableConfiguration->getEntityClass()}\" translations cannot be automatically updated"
+        );
 
         $translation = $this->provider->findForEntityAndLocale($entity, $locale);
         $shouldNewTranslationBeCreated = null === $translation;

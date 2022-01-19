@@ -102,6 +102,10 @@ final class EntitySubscriber implements EventSubscriber
                     return;
                 }
 
+                if (true === $this->isDisabledTranslationsAutoUpdate($entity)) {
+                    return;
+                }
+
                 $this->setEntityLocaleIfIsNull($entity, $locale);
 
                 $this->callIterativelyForObjectAndItsEmbbedables(
@@ -118,6 +122,10 @@ final class EntitySubscriber implements EventSubscriber
         array_walk($identityMap, function (array $entities) use ($manager): void {
             array_walk($entities, function (object $entity) use ($manager): void {
                 if (false === $this->isTranslatable($entity)) {
+                    return;
+                }
+
+                if (true === $this->isDisabledTranslationsAutoUpdate($entity)) {
                     return;
                 }
 
@@ -250,6 +258,14 @@ final class EntitySubscriber implements EventSubscriber
     private function isDeepNestedTransaction(EntityManagerInterface $manager): bool
     {
         return 1 < $manager->getConnection()->getTransactionNestingLevel();
+    }
+
+    public function isDisabledTranslationsAutoUpdate(object $entity): bool
+    {
+        return $this->entityConfigurationResolver
+            ->resolveTranslatable($entity)
+            ->isDisabledAutoTranslationsUpdate()
+        ;
     }
 
     private function isTranslatable(object $object): bool

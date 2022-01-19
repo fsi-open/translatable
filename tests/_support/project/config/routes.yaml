@@ -13,6 +13,20 @@ edit_article:
     requirements:
         id: '\d'
 
+new_post:
+    path:
+        en: /post
+        pl: /pl/post
+    controller: Tests\FSi\App\Controller\PostController
+
+edit_post:
+    path:
+        en: /post/{id}
+        pl: /pl/post/{id}
+    controller: Tests\FSi\App\Controller\PostController
+    requirements:
+        id: '\d'
+
 remove_article:
     path:
         en: /remove/{id}
