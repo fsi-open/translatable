@@ -61,24 +61,4 @@ final class RemoveControllerCest
         $I->dontSeeInRepository(ArticleTranslation::class);
         $I->dontSeeInRepository(Banner::class);
     }
-
-    /**
-     * @phpcs:disable
-     * @param FunctionalTester $I
-     * @return void
-     */
-    public function _before(FunctionalTester $I): void
-    {
-        $I->clearSavedLocale();
-    }
-
-    /**
-     * @phpcs:disable
-     * @param FunctionalTester $I
-     * @return void
-     */
-    public function _after(FunctionalTester $I): void
-    {
-        $I->clearSavedLocale();
-    }
 }

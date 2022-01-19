@@ -5,7 +5,6 @@ modules:
         - Tests\FSi\Helper\Functional
         - Tests\FSi\Module\DbModule
         - Tests\FSi\Module\FileModule
-        - Tests\FSi\Module\TranslationsModule
         - Symfony:
             app_path: tests/_support/project/src
             environment: test

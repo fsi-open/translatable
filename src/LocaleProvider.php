@@ -14,4 +14,6 @@ namespace FSi\Component\Translatable;
 interface LocaleProvider
 {
     public function getLocale(): string;
+    public function saveLocale(string $locale): void;
+    public function resetSavedLocale(): void;
 }

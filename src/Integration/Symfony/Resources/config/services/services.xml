@@ -33,7 +33,6 @@
 
         <service id="FSi\Component\Translatable\Integration\Symfony\Http\LocaleProvider">
             <argument type="service" id="request_stack" />
-            <argument type="service" id="session" />
             <argument key="$defaultLocale" type="string">%kernel.default_locale%</argument>
         </service>
 
