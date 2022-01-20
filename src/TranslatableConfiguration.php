@@ -18,6 +18,7 @@ final class TranslatableConfiguration
      */
     private string $translatableClass;
     private string $localeField;
+    private bool $disabledAutoTranslationsUpdate;
     private TranslationConfiguration $translationsConfiguration;
     private ?PropertyConfiguration $localeFieldReflection;
     /**
@@ -27,13 +28,17 @@ final class TranslatableConfiguration
 
     /**
      * @param class-string $translatableClass
-     * @param class-string $translationsClass
      * @param string $localeField
+     * @param bool $disabledAutoTranslationsUpdate
+     * @param class-string $translationsClass
+     * @param string $translationsLocaleField
+     * @param string $translationsPropertyField
      * @param array<string> $properties
      */
     public function __construct(
         string $translatableClass,
         string $localeField,
+        bool $disabledAutoTranslationsUpdate,
         string $translationsClass,
         string $translationsLocaleField,
         string $translationsPropertyField,
@@ -41,6 +46,7 @@ final class TranslatableConfiguration
     ) {
         $this->translatableClass = $translatableClass;
         $this->localeField = $localeField;
+        $this->disabledAutoTranslationsUpdate = $disabledAutoTranslationsUpdate;
         $this->localeFieldReflection = null;
         $this->translationsConfiguration = new TranslationConfiguration(
             $translationsClass,
@@ -54,6 +60,11 @@ final class TranslatableConfiguration
                 => new PropertyConfiguration($translatableClass, $property),
             $properties
         );
+    }
+
+    public function isDisabledAutoTranslationsUpdate(): bool
+    {
+        return $this->disabledAutoTranslationsUpdate;
     }
 
     /**

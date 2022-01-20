@@ -38,6 +38,7 @@ final class Configuration implements ConfigurationInterface
         ;
 
         $entitiesChildren->scalarNode('localeField')->defaultValue('locale')->end();
+        $entitiesChildren->booleanNode('disabledAutoTranslationsUpdate')->defaultValue(false)->end();
 
         $translationNode = $entitiesChildren->arrayNode('translation');
 

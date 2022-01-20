@@ -22,7 +22,3 @@ services:
     Psr\Http\Message\StreamFactoryInterface: '@nyholm.psr7.psr17_factory'
     nyholm.psr7.psr17_factory:
         class: Nyholm\Psr7\Factory\Psr17Factory
-
-    FSi\Component\Translatable\Integration\Symfony\Http\LocaleProvider:
-        public: true
-        arguments: ['@request_stack', '@session', '%kernel.default_locale%']

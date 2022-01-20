@@ -60,24 +60,4 @@ final class ListControllerCest
         $I->see('Title');
         $I->see('Tytuł');
     }
-
-    /**
-     * @phpcs:disable
-     * @param FunctionalTester $I
-     * @return void
-     */
-    public function _before(FunctionalTester $I): void
-    {
-        $I->clearSavedLocale();
-    }
-
-    /**
-     * @phpcs:disable
-     * @param FunctionalTester $I
-     * @return void
-     */
-    public function _after(FunctionalTester $I): void
-    {
-        $I->clearSavedLocale();
-    }
 }

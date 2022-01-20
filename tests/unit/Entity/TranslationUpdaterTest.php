@@ -202,6 +202,7 @@ final class TranslationUpdaterTest extends Unit
                 new TranslatableConfiguration(
                     Article::class,
                     'locale',
+                    false,
                     ArticleTranslation::class,
                     'locale',
                     'article',

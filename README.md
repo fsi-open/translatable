@@ -93,6 +93,7 @@ fsi_translatable:
         Tests\Entity\Article:
             localeField: locale # this can be skipped for a default value of locale
             fields: [title, description]
+            disabledAutoTranslationsUpdate: false # optional and false by default
             translation:
                 localeField: locale # also can be skipped
                 class: Tests\FSi\ArticleTranslation
@@ -152,5 +153,15 @@ The `LocaleProvider` implementation for Symfony will try to fetch the locale fro
 2. Failing to find one, it will fetch a current `Request` object from a `RequestStack` and retrieve the locale from that.
 3. Should there be no current `Request` (this will be the case for console commands and some test environments), it will return the default locale from the `FrameworkBundle`.
 
-If you want to manually set the locale that is returned from the `LocaleProvider`, calling the `LocaleProvider::setLocale()`
-method will persist it in the session until it is cleared or you will manually call the `LocaleProvider::clearSavedLocale()`.
+If you want to manually set the locale that is returned from the `LocaleProvider`, calling the `LocaleProvider::saveLocale()`
+method will persist it in the service until the next request. You can allso manually call the `LocaleProvider::resetSavedLocale()`
+to clear it.
+
+
+### Disabling automatic translations updates
+
+If you prefer creating translations manually and do not want them overwritten with
+contents of the translatable entity, you can set the `disableAutoTranslationsUpdate`
+option in it's configuration to `true`. This will prevent any creation or update of
+translations during the flush operation, but will still populate the translatable
+entity with contents of a translation entity, if one exists for the current locale.

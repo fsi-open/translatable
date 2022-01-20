@@ -13,6 +13,13 @@ fsi_translatable:
                 class: Tests\FSi\App\Entity\PageTranslation
                 relationField: page
 
+        Tests\FSi\App\Entity\Post:
+            fields: [title, content]
+            disabledAutoTranslationsUpdate: true
+            translation:
+                class: Tests\FSi\App\Entity\PostTranslation
+                relationField: post
+
         Tests\FSi\App\Entity\HomePage:
             fields: [title, description, preface]
             translation:

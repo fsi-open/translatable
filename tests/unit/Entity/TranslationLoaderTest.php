@@ -212,6 +212,7 @@ final class TranslationLoaderTest extends Unit
                 new TranslatableConfiguration(
                     Article::class,
                     'locale',
+                    false,
                     ArticleTranslation::class,
                     'locale',
                     'article',

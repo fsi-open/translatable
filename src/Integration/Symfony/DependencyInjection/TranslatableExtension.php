@@ -32,6 +32,7 @@ final class TranslatableExtension extends Extension
      * @param array{
      *   entities: array<class-string, array{
      *     localeField: string,
+     *     disabledAutoTranslationsUpdate: bool,
      *     translation: array{
      *       class: class-string,
      *       localeField: string,
@@ -54,6 +55,7 @@ final class TranslatableExtension extends Extension
          * @var array{
          *   entities: array<class-string, array{
          *     localeField: string,
+         *     disabledAutoTranslationsUpdate: bool,
          *     translation: array{
          *       class: class-string,
          *       localeField: string,
@@ -74,6 +76,7 @@ final class TranslatableExtension extends Extension
      * @param array{
      *   entities: array<class-string, array{
      *     localeField: string,
+     *     disabledAutoTranslationsUpdate: bool,
      *     translation: array{
      *       class: class-string,
      *       localeField: string,
@@ -93,6 +96,7 @@ final class TranslatableExtension extends Extension
             $definition->setArguments([
                 $class,
                 $entityConfiguration['localeField'],
+                $entityConfiguration['disabledAutoTranslationsUpdate'],
                 $entityConfiguration['translation']['class'],
                 $entityConfiguration['translation']['localeField'],
                 $entityConfiguration['translation']['relationField'],
