@@ -61,17 +61,12 @@ final class EntitySubscriber implements EventSubscriber
 
     public function postLoad(LifecycleEventArgs $event): void
     {
-        $entity = $event->getEntity();
-        if (false === $this->isTranslatable($entity)) {
+        $object = $event->getEntity();
+        if (false === $this->isTranslatable($object)) {
             return;
         }
 
-        $this->callIterativelyForObjectAndItsEmbbedables(
-            [$this->translationLoader, 'loadFromLocale'],
-            [$this->localeProvider->getLocale()],
-            $event->getEntityManager(),
-            $entity
-        );
+        $this->translationLoader->loadFromLocale($object, $this->localeProvider->getLocale());
     }
 
     public function preRemove(LifecycleEventArgs $event): void
@@ -86,7 +81,6 @@ final class EntitySubscriber implements EventSubscriber
 
     public function preFlush(PreFlushEventArgs $eventArgs): void
     {
-        /** @var EntityManagerInterface $manager */
         $manager = $eventArgs->getEntityManager();
         $uow = $manager->getUnitOfWork();
         if (true === $this->isDeepNestedTransaction($manager)) {
@@ -97,7 +91,7 @@ final class EntitySubscriber implements EventSubscriber
         $scheduledInsertions = $uow->getScheduledEntityInsertions();
         array_walk(
             $scheduledInsertions,
-            function (object $entity, $key, string $locale) use ($manager): void {
+            function (object $entity, $key, string $locale): void {
                 if (false === $this->isTranslatable($entity)) {
                     return;
                 }
@@ -107,20 +101,14 @@ final class EntitySubscriber implements EventSubscriber
                 }
 
                 $this->setEntityLocaleIfIsNull($entity, $locale);
-
-                $this->callIterativelyForObjectAndItsEmbbedables(
-                    [$this->translationUpdater, 'update'],
-                    [],
-                    $manager,
-                    $entity
-                );
+                $this->translationUpdater->update($entity);
             },
             $locale
         );
 
         $identityMap = $uow->getIdentityMap();
-        array_walk($identityMap, function (array $entities) use ($manager): void {
-            array_walk($entities, function (object $entity) use ($manager): void {
+        array_walk($identityMap, function (array $entities): void {
+            array_walk($entities, function (object $entity): void {
                 if (false === $this->isTranslatable($entity)) {
                     return;
                 }
@@ -129,12 +117,7 @@ final class EntitySubscriber implements EventSubscriber
                     return;
                 }
 
-                $this->callIterativelyForObjectAndItsEmbbedables(
-                    [$this->translationUpdater, 'update'],
-                    [],
-                    $manager,
-                    $entity
-                );
+                $this->translationUpdater->update($entity);
             });
         });
     }
@@ -147,70 +130,17 @@ final class EntitySubscriber implements EventSubscriber
         }
 
         $locale = $this->localeProvider->getLocale();
-        $uow = $manager->getUnitOfWork();
-        $scheduledInsertions = $uow->getScheduledEntityInsertions();
+        $scheduledInsertions = $manager->getUnitOfWork()->getScheduledEntityInsertions();
         array_walk(
             $scheduledInsertions,
-            function (object $entity) use ($manager, $locale): void {
-                $this->initializeEmptyTranslatableForNewTranslation($manager, $entity, $locale);
+            function (object $entity) use ($locale): void {
+                $this->initializeEmptyTranslatableForNewTranslation($entity, $locale);
             }
         );
     }
 
-    /**
-     * @param callable $callable
-     * @param array<mixed> $callableArguments
-     * @param EntityManagerInterface $manager
-     * @param object $object
-     * @return void
-     */
-    private function callIterativelyForObjectAndItsEmbbedables(
-        callable $callable,
-        array $callableArguments,
-        EntityManagerInterface $manager,
-        object $object
-    ): void {
-        $callable($object, ...$callableArguments);
-
-        /** @var ClassMetadataInfo<object> $metadata */
-        $metadata = $manager->getClassMetadata(get_class($object));
-        array_walk(
-            $metadata->embeddedClasses,
-            function (
-                array $configuration,
-                string $property,
-                callable $callable
-            ) use (
-                $object,
-                $manager,
-                $metadata,
-                $callableArguments
-            ): void {
-                if (null !== $configuration['declaredField'] || null !== $configuration['originalField']) {
-                    return;
-                }
-
-                $embeddable = $metadata->getFieldValue($object, $property);
-                if (null === $embeddable) {
-                    return;
-                }
-
-                $this->callIterativelyForObjectAndItsEmbbedables(
-                    $callable,
-                    $callableArguments,
-                    $manager,
-                    $embeddable
-                );
-            },
-            $callable
-        );
-    }
-
-    private function initializeEmptyTranslatableForNewTranslation(
-        EntityManagerInterface $manager,
-        object $translation,
-        string $locale
-    ): void {
+    private function initializeEmptyTranslatableForNewTranslation(object $translation, string $locale): void
+    {
         if (false === $this->isTranslation($translation)) {
             return;
         }
@@ -237,12 +167,7 @@ final class EntitySubscriber implements EventSubscriber
             return;
         }
 
-        $this->callIterativelyForObjectAndItsEmbbedables(
-            [$this->translationLoader, 'loadFromTranslation'],
-            [$translation],
-            $manager,
-            $entity
-        );
+        $this->translationLoader->loadFromTranslation($entity, $translation);
     }
 
     private function setEntityLocaleIfIsNull(object $entity, string $locale): void
