@@ -15,7 +15,7 @@ use Assert\Assertion;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use FSi\Component\Translatable;
@@ -47,7 +47,7 @@ final class TranslationManager implements Translatable\TranslationManager
         $translatableConfiguration = $this->configurationResolver->resolveTranslatable($entity);
         $translationsClass = $translatableConfiguration->getTranslationConfiguration()->getEntityClass();
 
-        /** @var ClassMetadata<object> $translationsClassMetadata */
+        /** @var ClassMetadataInfo<object> $translationsClassMetadata */
         $translationsClassMetadata = $this->getManagerForClass($translationsClass)
             ->getClassMetadata($translationsClass)
         ;
@@ -127,6 +127,8 @@ final class TranslationManager implements Translatable\TranslationManager
     {
         if (true === $value instanceof PersistentCollection) {
             $sanitizedValue = new ArrayCollection($value->toArray());
+        } elseif (true === $this->isEmbeddable($value)) {
+            $sanitizedValue = clone $value;
         } else {
             $sanitizedValue = $value;
         }
@@ -157,6 +159,8 @@ final class TranslationManager implements Translatable\TranslationManager
             );
 
             $sanitizedValue = $translationValue;
+        } elseif (true === $this->isEmbeddable($translatableValue)) {
+            $sanitizedValue = clone $translatableValue;
         } else {
             $sanitizedValue = $translatableValue;
         }
@@ -219,6 +223,28 @@ final class TranslationManager implements Translatable\TranslationManager
         }
 
         return $isEmpty;
+    }
+
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    private function isEmbeddable($value): bool
+    {
+        if (false === is_object($value)) {
+            return false;
+        }
+
+        $class = get_class($value);
+
+        $manager = $this->managerRegistry->getManagerForClass($class);
+        if (null === $manager) {
+            return false;
+        }
+
+        /** @var ClassMetadataInfo<object> $metadata */
+        $metadata = $manager->getClassMetadata($class);
+        return $metadata->isEmbeddedClass;
     }
 
     /**
