@@ -4,13 +4,20 @@ includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
 parameters:
     bootstrapFiles:
-        - '%rootDir%/../../../vendor/codeception/codeception/autoload.php'
+        - 'vendor/codeception/codeception/autoload.php'
     level: 8
     paths:
         - src
         - tests
     inferPrivatePropertyTypeFromConstructor: true
-    excludes_analyse:
-        - '%rootDir%/../../../tests/_support/_generated'
-        - '%rootDir%/../../../tests/_support/project/var'
-        - '%rootDir%/../../../tests/_support/UnitTester.php'
+    excludePaths:
+        - 'tests/_support/_generated'
+        - 'tests/_support/project/var'
+        - 'tests/_support/UnitTester.php'
+    ignoreErrors:
+        -
+            message: '#^Parameter \#1 \$errors of method Tests\\FSi\\App\\Controller\\[a-zA-z]{1,}Controller::formErrorsToMessage\(\).{1,}$#'
+            path: 'tests/_support/project/src/Controller'
+            reportUnmatched: false
+
+
