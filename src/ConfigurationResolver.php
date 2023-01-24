@@ -60,18 +60,28 @@ final class ConfigurationResolver
         );
     }
 
-    public function isTranslatable(object $entity): bool
+    /**
+     * @param object|class-string<object> $entityOrClass
+     */
+    public function isTranslatable($entityOrClass): bool
     {
         return array_key_exists(
-            $this->classProvider->forObject($entity),
+            true === is_object($entityOrClass)
+                ? $this->classProvider->forObject($entityOrClass)
+                : $entityOrClass,
             $this->translatableConfigurations
         );
     }
 
-    public function isTranslation(object $entity): bool
+    /**
+     * @param object|class-string<object> $entityOrClass
+     */
+    public function isTranslation($entityOrClass): bool
     {
         return array_key_exists(
-            $this->classProvider->forObject($entity),
+            true === is_object($entityOrClass)
+                ? $this->classProvider->forObject($entityOrClass)
+                : $entityOrClass,
             $this->translationConfigurations
         );
     }
