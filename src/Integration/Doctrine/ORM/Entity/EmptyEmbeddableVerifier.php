@@ -113,11 +113,11 @@ final class EmptyEmbeddableVerifier
 
     /**
      * @param ClassMetadata<object> $classMetadata
-     * @return array<string, array{ class: class-string, declaredField: string, originalField: string }>
+     * @return array<string, array{ class: class-string, declaredField?: string|null, originalField: string }>
      */
     private static function getAndSortEmbeddedDataByNestingLevel(ClassMetadata $classMetadata): array
     {
-        /** @var array<string, array{ class: class-string, declaredField: string, originalField: string }> $data */
+        /** @var array<string, array{ class: class-string, declaredField?: string|null, originalField: string }> $data */
         $data = $classMetadata->embeddedClasses;
         // Example data ["fieldName" => [], "fieldName.nestedFieldName" => []]
         uksort(

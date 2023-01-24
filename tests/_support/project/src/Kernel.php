@@ -34,7 +34,8 @@ final class Kernel extends HttpKernel\Kernel
      */
     public function registerBundles(): iterable
     {
-        $contents = require $this->getProjectDir() . '/config/bundles.php';
+        $contents = require "{$this->getProjectDir()}/config/bundles.php";
+        /** @var class-string<Bundle> $class */
         foreach ($contents as $class => $envs) {
             if ($envs[$this->environment] ?? $envs['all'] ?? false) {
                 yield new $class();

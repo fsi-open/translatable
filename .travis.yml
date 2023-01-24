@@ -7,7 +7,7 @@ cache:
     directories:
         - vendor
 
-dist: xenial
+dist: focal
 
 matrix:
     include:
@@ -15,6 +15,7 @@ matrix:
           env:
               - COMPOSER_FLAGS='--prefer-lowest'
         - php: 8.0
+        - php: 8.1
 
 install:
     - phpenv config-rm xdebug.ini

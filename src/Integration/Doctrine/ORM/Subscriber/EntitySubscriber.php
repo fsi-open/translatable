@@ -108,7 +108,11 @@ final class EntitySubscriber implements EventSubscriber
 
         $identityMap = $uow->getIdentityMap();
         array_walk($identityMap, function (array $entities): void {
-            array_walk($entities, function (object $entity): void {
+            array_walk($entities, function (?object $entity): void {
+                if (null === $entity) {
+                    return;
+                }
+
                 if (false === $this->isTranslatable($entity)) {
                     return;
                 }

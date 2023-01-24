@@ -17,6 +17,9 @@ use Symfony\Component\Form\FormInterface;
 
 trait FormatFormErrors
 {
+    /**
+     * @param FormErrorIterator<FormError> $errors
+     */
     private function formErrorsToMessage(FormErrorIterator $errors): ?string
     {
         $message = '';
