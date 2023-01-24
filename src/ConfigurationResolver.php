@@ -16,6 +16,7 @@ use Assert\Assertion;
 use function array_key_exists;
 use function array_walk;
 use function is_array;
+use function is_object;
 use function iterator_to_array;
 
 final class ConfigurationResolver
@@ -86,27 +87,37 @@ final class ConfigurationResolver
         );
     }
 
-    public function resolveTranslatable(object $entity): TranslatableConfiguration
+    /**
+     * @param object|class-string<object> $entityOrClass
+     */
+    public function resolveTranslatable($entityOrClass): TranslatableConfiguration
     {
-        $class = $this->classProvider->forObject($entity);
-        Assertion::keyExists(
-            $this->translatableConfigurations,
-            $class,
-            "\"{$class}\" is not a translatable entity"
+        if (true === is_object($entityOrClass)) {
+            $entityOrClass = $this->classProvider->forObject($entityOrClass);
+        }
+
+        Assertion::true(
+            $this->isTranslatable($entityOrClass),
+            "\"{$entityOrClass}\" is not a translatable entity"
         );
 
-        return $this->translatableConfigurations[$class];
+        return $this->translatableConfigurations[$entityOrClass];
     }
 
-    public function resolveTranslation(object $translation): TranslationConfiguration
+    /**
+     * @param object|class-string<object> $translationOrClass
+     */
+    public function resolveTranslation($translationOrClass): TranslationConfiguration
     {
-        $class = $this->classProvider->forObject($translation);
-        Assertion::keyExists(
-            $this->translationConfigurations,
-            $class,
-            "\"{$class}\" is not a translation entity"
+        if (true === is_object($translationOrClass)) {
+            $translationOrClass = $this->classProvider->forObject($translationOrClass);
+        }
+
+        Assertion::true(
+            $this->isTranslation($translationOrClass),
+            "\"{$translationOrClass}\" is not a translation entity"
         );
 
-        return $this->translationConfigurations[$class];
+        return $this->translationConfigurations[$translationOrClass];
     }
 }
