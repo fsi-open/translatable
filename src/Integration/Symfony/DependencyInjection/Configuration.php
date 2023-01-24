@@ -30,8 +30,7 @@ final class Configuration implements ConfigurationInterface
 
         /** @var NodeBuilder $entitiesChildren */
         $entitiesChildren = $rootChildren->arrayNode('entities')
-            ->isRequired()
-            ->requiresAtLeastOneElement()
+            ->defaultValue([])
             ->useAttributeAsKey('class')
             ->arrayPrototype()
             ->children()
