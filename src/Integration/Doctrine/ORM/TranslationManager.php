@@ -57,11 +57,12 @@ final class TranslationManager implements Translatable\TranslationManager
             $propertiesConfiguratios,
             function (PropertyConfiguration $configuration) use ($translationsClassMetadata, $entity): void {
                 $property = $configuration->getPropertyName();
-                if (false === $translationsClassMetadata->isCollectionValuedAssociation($property)) {
-                    return;
-                }
+                $emptyValue = true === $translationsClassMetadata->isCollectionValuedAssociation($property)
+                    ? new ArrayCollection()
+                    : null
+                ;
 
-                $configuration->setValueForEntity($entity, new ArrayCollection());
+                $configuration->setValueForEntity($entity, $emptyValue);
             }
         );
     }
