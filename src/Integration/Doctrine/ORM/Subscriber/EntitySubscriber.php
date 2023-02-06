@@ -107,9 +107,13 @@ final class EntitySubscriber implements EventSubscriber
         );
 
         $identityMap = $uow->getIdentityMap();
-        array_walk($identityMap, function (array $entities): void {
-            array_walk($entities, function (?object $entity): void {
+        array_walk($identityMap, function (array $entities) use ($scheduledInsertions): void {
+            array_walk($entities, function (?object $entity) use ($scheduledInsertions): void {
                 if (null === $entity) {
+                    return;
+                }
+
+                if (true === in_array($entity, $scheduledInsertions, true)) {
                     return;
                 }
 
