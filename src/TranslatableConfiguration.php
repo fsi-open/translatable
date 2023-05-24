@@ -22,7 +22,7 @@ final class TranslatableConfiguration
     private TranslationConfiguration $translationsConfiguration;
     private ?PropertyConfiguration $localeFieldReflection;
     /**
-     * @var array<PropertyConfiguration>
+     * @var array<string, PropertyConfiguration>
      */
     private array $propertyConfigurations;
 
@@ -55,11 +55,19 @@ final class TranslatableConfiguration
             $properties
         );
 
-        $this->propertyConfigurations = array_map(
-            fn(string $property): PropertyConfiguration
-                => new PropertyConfiguration($translatableClass, $property),
-            $properties
+        $this->propertyConfigurations = array_reduce(
+            $properties,
+            static function (array $accumulator, string $property) use ($translatableClass): array {
+                $accumulator[$property] = new PropertyConfiguration($translatableClass, $property);
+                return $accumulator;
+            },
+            []
         );
+    }
+
+    public function isPropertyTranslatable(string $property): bool
+    {
+        return array_key_exists($property, $this->propertyConfigurations);
     }
 
     public function isDisabledAutoTranslationsUpdate(): bool
