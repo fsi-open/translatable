@@ -66,6 +66,7 @@ final class EntitySubscriber implements EventSubscriber
             return;
         }
 
+        $this->initializeProxy($object);
         $this->translationLoader->loadFromLocale($object, $this->localeProvider->getLocale());
     }
 
@@ -76,6 +77,7 @@ final class EntitySubscriber implements EventSubscriber
             return;
         }
 
+        $this->initializeProxy($object);
         $this->translationCleaner->clean($object);
     }
 
@@ -100,6 +102,7 @@ final class EntitySubscriber implements EventSubscriber
                     return;
                 }
 
+                $this->initializeProxy($entity);
                 $this->setEntityLocaleIfIsNull($entity, $locale);
                 $this->translationUpdater->update($entity);
             },
@@ -125,6 +128,7 @@ final class EntitySubscriber implements EventSubscriber
                     return;
                 }
 
+                $this->initializeProxy($entity);
                 $this->translationUpdater->update($entity);
             });
         });
@@ -153,6 +157,7 @@ final class EntitySubscriber implements EventSubscriber
             return;
         }
 
+        $this->initializeProxy($translation);
         $translationConfiguration = $this->entityConfigurationResolver->resolveTranslation($translation);
         $translationLocale = $translationConfiguration->getLocaleForEntity($translation);
         Assertion::notNull(
@@ -203,13 +208,11 @@ final class EntitySubscriber implements EventSubscriber
 
     private function isTranslatable(object $object): bool
     {
-        $this->initializeProxy($object);
         return $this->entityConfigurationResolver->isTranslatable($object);
     }
 
     private function isTranslation(object $object): bool
     {
-        $this->initializeProxy($object);
         return $this->entityConfigurationResolver->isTranslation($object);
     }
 
