@@ -30,7 +30,6 @@ final class PropertyConfiguration
 
     /**
      * @param class-string $entityClass
-     * @param string $propertyName
      */
     public function __construct(string $entityClass, string $propertyName)
     {
@@ -46,7 +45,6 @@ final class PropertyConfiguration
     }
 
     /**
-     * @param object $entity
      * @return mixed
      */
     public function getValueForEntity(object $entity)
@@ -56,9 +54,7 @@ final class PropertyConfiguration
     }
 
     /**
-     * @param object $entity
      * @param mixed $value
-     * @return void
      */
     public function setValueForEntity(object $entity, $value): void
     {
@@ -90,8 +86,6 @@ final class PropertyConfiguration
 
     /**
      * @param class-string $entityClass
-     * @param string $propertyName
-     * @return void
      */
     private function verifyPropertyExists(string $entityClass, string $propertyName): void
     {

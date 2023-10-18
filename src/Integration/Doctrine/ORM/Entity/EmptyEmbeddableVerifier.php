@@ -71,9 +71,7 @@ final class EmptyEmbeddableVerifier
     }
 
     /**
-     * @param EntityManagerInterface $manager
-     * @param object $translation
-     * @return array<class-string>
+     * @return array<string, class-string>
      */
     public static function getEmbeddableClasses(EntityManagerInterface $manager, object $translation): array
     {
@@ -89,8 +87,6 @@ final class EmptyEmbeddableVerifier
 
     /**
      * @param ClassMetadata<object> $classMetadata
-     * @param object $embeddable
-     * @return bool
      */
     private static function isEmbeddableEmpty(ClassMetadata $classMetadata, object $embeddable): bool
     {
@@ -138,8 +134,6 @@ final class EmptyEmbeddableVerifier
     }
 
     /**
-     * @param EntityManagerInterface $manager
-     * @param object $translation
      * @return ClassMetadata<object>
      */
     private static function getTranslationMetadata(

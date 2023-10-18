@@ -94,7 +94,6 @@ final class TranslationProvider implements Translatable\TranslationProvider
 
     /**
      * @param class-string $class
-     * @return EntityManagerInterface
      */
     private function getManagerForClass(string $class): EntityManagerInterface
     {

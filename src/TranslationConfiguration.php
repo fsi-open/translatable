@@ -33,9 +33,7 @@ final class TranslationConfiguration
 
     /**
      * @param class-string $entityClass
-     * @param string $localeField
-     * @param string $relationField
-     * @param array<string> $properties
+     * @param list<string> $properties
      */
     public function __construct(
         string $entityClass,
@@ -101,8 +99,6 @@ final class TranslationConfiguration
     }
 
     /**
-     * @param object $entity
-     * @param string $property
      * @return mixed
      */
     public function getValueForProperty(object $entity, string $property)
@@ -112,10 +108,7 @@ final class TranslationConfiguration
     }
 
     /**
-     * @param object $entity
-     * @param string $property
      * @param mixed $value
-     * @return void
      */
     public function setValueForProperty(object $entity, string $property, $value): void
     {

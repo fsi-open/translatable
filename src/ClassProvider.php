@@ -14,7 +14,6 @@ namespace FSi\Component\Translatable;
 interface ClassProvider
 {
     /**
-     * @param object $object
      * @return class-string
      */
     public function forObject(object $object): string;

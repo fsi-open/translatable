@@ -28,12 +28,8 @@ final class TranslatableConfiguration
 
     /**
      * @param class-string $translatableClass
-     * @param string $localeField
-     * @param bool $disabledAutoTranslationsUpdate
      * @param class-string $translationsClass
-     * @param string $translationsLocaleField
-     * @param string $translationsPropertyField
-     * @param array<string> $properties
+     * @param list<string> $properties
      */
     public function __construct(
         string $translatableClass,
@@ -99,7 +95,7 @@ final class TranslatableConfiguration
     }
 
     /**
-     * @return array<PropertyConfiguration>
+     * @return array<string, PropertyConfiguration>
      */
     public function getPropertyConfigurations(): array
     {

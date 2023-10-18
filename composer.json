@@ -33,11 +33,11 @@
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/orm": "^2.9",
         "doctrine/persistence": "^2.0",
-        "fsi/files": "^1.1",
+        "fsi/files": "^2.0@dev",
         "guzzlehttp/psr7": "^1.8",
         "monolog/monolog": "^1.25",
         "nyholm/psr7": "^1.4",
-        "oneup/flysystem-bundle": "^3.7",
+        "oneup/flysystem-bundle": "^4.9",
         "php-http/guzzle7-adapter": "^1.0",
         "php-http/httplug-bundle": "^1.20",
         "phpstan/phpstan": "^1.9.14",
@@ -87,7 +87,10 @@
     "config": {
         "bin-dir": "vendor/bin",
         "process-timeout": 0,
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "extra": {
         "branch-alias": {
