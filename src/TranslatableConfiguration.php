@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FSi\Component\Translatable;
 
+use FSi\Component\Translatable\Exception\ClassDoesNotExistException;
+
 final class TranslatableConfiguration
 {
     /**
@@ -40,6 +42,8 @@ final class TranslatableConfiguration
         string $translationsPropertyField,
         array $properties
     ) {
+        $this->assertValidClassAndLocaleField($translatableClass, $localeField);
+
         $this->translatableClass = $translatableClass;
         $this->localeField = $localeField;
         $this->disabledAutoTranslationsUpdate = $disabledAutoTranslationsUpdate;
@@ -112,5 +116,16 @@ final class TranslatableConfiguration
         }
 
         return $this->localeFieldReflection;
+    }
+
+    private function assertValidClassAndLocaleField(
+        string $entityClass,
+        string $localeField
+    ): void {
+        if (false === class_exists($entityClass)) {
+            throw new ClassDoesNotExistException("Translatable class \"{$entityClass}\" does not exist.");
+        }
+
+        PropertyConfiguration::verifyPropertyExists($entityClass, $localeField);
     }
 }

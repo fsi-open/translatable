@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FSi\Component\Translatable;
 
 use Assert\Assertion;
+use FSi\Component\Translatable\Exception\ClassDoesNotExistException;
 use ReflectionClass;
 
 use function array_walk;
@@ -41,6 +42,8 @@ final class TranslationConfiguration
         string $relationField,
         array $properties
     ) {
+        $this->assertValidClassAndLocaleField($entityClass, $localeField);
+
         $this->entityClass = $entityClass;
         $this->localeField = $localeField;
         $this->relationField = $relationField;
@@ -146,5 +149,16 @@ final class TranslationConfiguration
         }
 
         return $this->relationPropertyReflection;
+    }
+
+    private function assertValidClassAndLocaleField(
+        string $entityClass,
+        string $localeField
+    ): void {
+        if (false === class_exists($entityClass)) {
+            throw new ClassDoesNotExistException("Translation class \"{$entityClass}\" does not exist.");
+        }
+
+        PropertyConfiguration::verifyPropertyExists($entityClass, $localeField);
     }
 }
