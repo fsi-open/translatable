@@ -63,6 +63,8 @@ final class TranslatableConfiguration
             },
             []
         );
+
+        TranslatableConfigurationValidator::validate($this);
     }
 
     public function isPropertyTranslatable(string $property): bool
@@ -123,7 +125,7 @@ final class TranslatableConfiguration
         string $localeField
     ): void {
         if (false === class_exists($entityClass)) {
-            throw new ClassDoesNotExistException("Translatable class \"{$entityClass}\" does not exist.");
+            throw ClassDoesNotExistException::create($entityClass);
         }
 
         PropertyConfiguration::verifyPropertyExists($entityClass, $localeField);

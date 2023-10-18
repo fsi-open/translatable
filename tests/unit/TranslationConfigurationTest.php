@@ -22,7 +22,7 @@ final class TranslationConfigurationTest extends Unit
     public function testNonExistentTranslationClass(): void
     {
         $this->expectException(ClassDoesNotExistException::class);
-        $this->expectExceptionMessage('Translation class "Some\Random\ClassName" does not exist.');
+        $this->expectExceptionMessage('Class "Some\Random\ClassName" does not exist.');
 
         /** @var class-string<object> $nonExistentClassString */
         $nonExistentClassString = 'Some\Random\ClassName';

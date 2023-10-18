@@ -15,7 +15,10 @@ use Assert\Assertion;
 use FSi\Component\Translatable\Exception\PropertyDoesNotExistException;
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionProperty;
+use ReflectionType;
+use ReflectionUnionType;
 
 use function array_reduce;
 use function class_parents;
@@ -52,9 +55,7 @@ final class PropertyConfiguration
         );
 
         if (false === $propertyExistsInAParent) {
-            throw new PropertyDoesNotExistException(
-                self::nonExistantFieldExceptionMessage($entityClass, $propertyName)
-            );
+            throw PropertyDoesNotExistException::create($entityClass, $propertyName);
         }
     }
 
@@ -93,9 +94,12 @@ final class PropertyConfiguration
         $this->getPropertyReflection()->setValue($entity, $value);
     }
 
-    private static function nonExistantFieldExceptionMessage(string $entityClass, string $propertyName): string
+    /**
+     * @return ReflectionNamedType|ReflectionUnionType|ReflectionType|null
+     */
+    public function getType()
     {
-        return "Neither class \"{$entityClass}\" nor any of it's parent have the property \"{$propertyName}\".";
+        return $this->getPropertyReflection()->getType();
     }
 
     private function getPropertyReflection(): ReflectionProperty
@@ -113,9 +117,7 @@ final class PropertyConfiguration
         }
 
         if (null === $this->propertyReflection) {
-            throw new PropertyDoesNotExistException(
-                self::nonExistantFieldExceptionMessage($this->entityClass, $this->propertyName)
-            );
+            throw PropertyDoesNotExistException::create($this->entityClass, $this->propertyName);
         }
 
         return $this->propertyReflection;

@@ -13,4 +13,10 @@ namespace FSi\Component\Translatable\Exception;
 
 final class PropertyDoesNotExistException extends TranslatableException
 {
+    public static function create(string $entityClass, string $propertyName): self
+    {
+        return new self(
+            "Neither class \"{$entityClass}\" nor any of it's parent have the property \"{$propertyName}\"."
+        );
+    }
 }

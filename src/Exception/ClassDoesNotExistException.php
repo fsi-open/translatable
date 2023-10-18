@@ -13,4 +13,8 @@ namespace FSi\Component\Translatable\Exception;
 
 final class ClassDoesNotExistException extends TranslatableException
 {
+    public static function create(string $entityClass): self
+    {
+        return new self("Class \"{$entityClass}\" does not exist.");
+    }
 }

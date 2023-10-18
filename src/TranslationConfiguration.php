@@ -16,11 +16,12 @@ use FSi\Component\Translatable\Exception\ClassDoesNotExistException;
 use ReflectionClass;
 
 use function array_walk;
+use function class_exists;
 
 final class TranslationConfiguration
 {
     /**
-     * @var class-string
+     * @var class-string<object>
      */
     private string $entityClass;
     private string $localeField;
@@ -33,7 +34,7 @@ final class TranslationConfiguration
     private array $propertyConfigurations;
 
     /**
-     * @param class-string $entityClass
+     * @param class-string<object> $entityClass
      * @param list<string> $properties
      */
     public function __construct(
@@ -64,7 +65,7 @@ final class TranslationConfiguration
     }
 
     /**
-     * @return class-string
+     * @return class-string<object>
      */
     public function getEntityClass(): string
     {
@@ -156,7 +157,7 @@ final class TranslationConfiguration
         string $localeField
     ): void {
         if (false === class_exists($entityClass)) {
-            throw new ClassDoesNotExistException("Translation class \"{$entityClass}\" does not exist.");
+            throw ClassDoesNotExistException::create($entityClass);
         }
 
         PropertyConfiguration::verifyPropertyExists($entityClass, $localeField);
