@@ -14,8 +14,8 @@ namespace Tests\FSi\App\Entity;
 class HomePageTranslation extends PageTranslation
 {
     private ?int $id = null;
-    private ?string $locale = null;
-    private ?string $preface = null;
+    private ?string $locale;
+    private ?string $preface;
 
     public function getId(): ?int
     {

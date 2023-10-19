@@ -14,11 +14,14 @@ namespace Tests\FSi\App\Entity;
 final class InvalidEntityTranslation
 {
     private ?int $id = null;
-    private ?string $locale = null;
-    private ?string $nonNullableField = null;
-    private ?int $mismatchedField = null;
-    private $undefinedFieldTypeDeclaration = null;
-    private ?InvalidEntity $entity = null;
+    private ?string $locale;
+    private ?string $nonNullableField;
+    private ?int $mismatchedField;
+    /**
+     * @var string|null
+     */
+    private $undefinedFieldTypeDeclaration;
+    private ?InvalidEntity $entity;
 
     public function getId(): ?int
     {
@@ -35,22 +38,22 @@ final class InvalidEntityTranslation
         $this->locale = $locale;
     }
 
-    public function getNonNullableField(): string
+    public function getNonNullableField(): ?string
     {
         return $this->nonNullableField;
     }
 
-    public function setNonNullableField(string $nonNullableField): void
+    public function setNonNullableField(?string $nonNullableField): void
     {
         $this->nonNullableField = $nonNullableField;
     }
 
-    public function getMismatchedField(): ?string
+    public function getMismatchedField(): ?int
     {
         return $this->mismatchedField;
     }
 
-    public function setMismatchedField(?string $mismatchedField): void
+    public function setMismatchedField(?int $mismatchedField): void
     {
         $this->mismatchedField = $mismatchedField;
     }

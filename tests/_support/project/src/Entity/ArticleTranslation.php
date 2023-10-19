@@ -18,14 +18,14 @@ use FSi\Component\Files\WebFile;
 class ArticleTranslation
 {
     private ?int $id = null;
-    private ?string $locale = null;
-    private ?string $title = null;
-    private ?string $description = null;
+    private ?string $locale;
+    private ?string $title;
+    private ?string $description;
     private ?WebFile $photo = null;
     private ?string $photoPath = null;
-    private ?Author $author = null;
+    private ?Author $author;
     private ?Article $article;
-    private ?Banner $banner = null;
+    private ?Banner $banner;
     /**
      * @var Collection<int, Comment>
      */
@@ -43,6 +43,8 @@ class ArticleTranslation
         $this->description = $description;
         $this->author = $author;
         $this->article = $article;
+        $this->photo = null;
+        $this->photoPath = null;
         $this->comments = new ArrayCollection();
     }
 

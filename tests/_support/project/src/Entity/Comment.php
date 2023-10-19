@@ -14,8 +14,8 @@ namespace Tests\FSi\App\Entity;
 class Comment
 {
     private ?int $id = null;
-    private ?string $content = null;
-    private ?ArticleTranslation $translation = null;
+    private ?string $content;
+    private ?ArticleTranslation $translation;
 
     public function __construct(?string $content = null)
     {

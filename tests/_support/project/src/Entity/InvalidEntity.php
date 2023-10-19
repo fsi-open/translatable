@@ -17,10 +17,10 @@ use Doctrine\Common\Collections\Collection;
 final class InvalidEntity
 {
     private ?int $id = null;
-    private ?string $locale = null;
+    private ?string $locale;
     private string $nonNullableField = '';
-    private ?string $mismatchedField = null;
-    private ?string $undefinedFieldTypeDeclaration = null;
+    private ?string $mismatchedField;
+    private ?string $undefinedFieldTypeDeclaration;
     /**
      * @var Collection<string, InvalidEntityTranslation>
      */

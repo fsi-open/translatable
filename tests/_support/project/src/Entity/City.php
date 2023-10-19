@@ -13,7 +13,12 @@ namespace Tests\FSi\App\Entity;
 
 class City
 {
-    private ?string $name = null;
+    private ?string $name;
+
+    public function __construct(?string $name = null)
+    {
+        $this->name = $name;
+    }
 
     public function getName(): ?string
     {

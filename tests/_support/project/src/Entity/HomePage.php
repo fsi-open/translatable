@@ -13,7 +13,16 @@ namespace Tests\FSi\App\Entity;
 
 class HomePage extends Page
 {
-    private ?string $preface = null;
+    private ?string $preface;
+
+    public function __construct(
+        ?string $title = null,
+        ?string $description = null,
+        ?string $preface = null
+    ) {
+        parent::__construct($title, $description);
+        $this->preface = $preface;
+    }
 
     public function getPreface(): ?string
     {

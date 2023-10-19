@@ -13,6 +13,7 @@ namespace FSi\Component\Translatable;
 
 use Assert\Assertion;
 use FSi\Component\Translatable\Exception\PropertyDoesNotExistException;
+use FSi\Component\Translatable\Exception\UnitializedPropertyValueException;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -22,6 +23,7 @@ use ReflectionUnionType;
 
 use function array_reduce;
 use function class_parents;
+use function method_exists;
 use function property_exists;
 
 final class PropertyConfiguration
@@ -82,7 +84,12 @@ final class PropertyConfiguration
     public function getValueForEntity(object $entity)
     {
         Assertion::isInstanceOf($entity, $this->entityClass);
-        return $this->getPropertyReflection()->getValue($entity);
+        $propertyReflection = $this->getPropertyReflection();
+        if (false === $propertyReflection->isInitialized($entity)) {
+            return $this->handleUninitializedProperty($propertyReflection);
+        }
+
+        return $propertyReflection->getValue($entity);
     }
 
     /**
@@ -121,5 +128,34 @@ final class PropertyConfiguration
         }
 
         return $this->propertyReflection;
+    }
+
+    /**
+     * @return null
+     * @throws UnitializedPropertyValueException
+     */
+    private function handleUninitializedProperty(ReflectionProperty $propertyReflection)
+    {
+        if (
+            true === method_exists($propertyReflection, 'hasDefaultValue')
+            && true === method_exists($propertyReflection, 'getDefaultValue')
+            && true === $propertyReflection->hasDefaultValue()
+        ) {
+            return $propertyReflection->getDefaultValue();
+        }
+
+        $type = $propertyReflection->getType();
+        if (null === $type) {
+            return null;
+        }
+
+        if (false === $type->allowsNull()) {
+            throw UnitializedPropertyValueException::create(
+                $this->entityClass,
+                $propertyReflection->getName()
+            );
+        }
+
+        return null;
     }
 }

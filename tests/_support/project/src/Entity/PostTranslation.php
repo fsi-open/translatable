@@ -14,10 +14,10 @@ namespace Tests\FSi\App\Entity;
 class PostTranslation
 {
     private ?int $id = null;
-    private ?string $locale = null;
-    private ?string $title = null;
-    private ?string $content = null;
-    private ?Post $post = null;
+    private ?string $locale;
+    private ?string $title;
+    private ?string $content;
+    private ?Post $post;
 
     public function getId(): ?int
     {

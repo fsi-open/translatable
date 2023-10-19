@@ -13,15 +13,15 @@ namespace Tests\FSi\App\Entity;
 
 class Author
 {
-    private ?string $name = null;
-    private ?string $description = null;
-    private ?City $city = null;
+    private ?string $name;
+    private ?string $description;
+    private ?City $city;
 
     public function __construct(?string $name = null, ?string $description = null)
     {
         $this->name = $name;
         $this->description = $description;
-        $this->city = new City();
+        $this->city = null;
     }
 
     public function getName(): ?string

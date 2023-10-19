@@ -167,18 +167,24 @@ final class TranslatableConfigurationValidator
             );
         }
 
+        /** @var list<ReflectionNamedType> $translatableTypeReflectionTypes */
+        $translatableTypeReflectionTypes = $translatableTypeReflection->getTypes();
+
         /** @var list<string> $translatableUnionTypes */
         $translatableUnionTypes = array_map(
             static fn(ReflectionNamedType $propertyTypeReflection): string
                 => self::sanitizePropertyType($propertyTypeReflection->getName()),
-            $translatableTypeReflection->getTypes()
+            $translatableTypeReflectionTypes
         );
+
+        /** @var list<ReflectionNamedType> $translationTypeReflectionTypes */
+        $translationTypeReflectionTypes = $translationTypeReflection->getTypes();
 
         /** @var list<string> $translationUnionTypes */
         $translationUnionTypes = array_map(
             static fn(ReflectionNamedType $propertyTypeReflection): string
                 => self::sanitizePropertyType($propertyTypeReflection->getName()),
-            $translationTypeReflection->getTypes()
+            $translationTypeReflectionTypes
         );
 
         if ([] !== array_diff($translatableUnionTypes, $translationUnionTypes)) {
