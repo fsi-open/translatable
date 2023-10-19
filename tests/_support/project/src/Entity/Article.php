@@ -19,10 +19,10 @@ use FSi\Component\Files\WebFile;
 class Article
 {
     private ?int $id = null;
-    private ?string $locale = null;
+    private ?string $locale;
     private ?DateTimeImmutable $publicationDate = null;
-    private ?string $title = null;
-    private ?string $description = null;
+    private ?string $title;
+    private ?string $description;
     private ?WebFile $photo = null;
     private ?string $photoPath = null;
     private ?Author $author = null;

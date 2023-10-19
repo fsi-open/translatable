@@ -71,11 +71,7 @@ final class TranslationUpdater
     }
 
     /**
-     * @param array<PropertyConfiguration> $propertiesConfigurations
-     * @param object $entity
-     * @param object $translation
-     * @param TranslationConfiguration $translationConfiguration
-     * @return void
+     * @param array<string, PropertyConfiguration> $propertiesConfigurations
      */
     private function updateTranslationObject(
         array $propertiesConfigurations,

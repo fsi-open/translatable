@@ -14,9 +14,15 @@ namespace Tests\FSi\App\Entity;
 class Page
 {
     private ?int $id = null;
-    private ?string $locale = null;
-    private ?string $title = null;
-    private ?string $description = null;
+    private ?string $locale;
+    private ?string $title;
+    private ?string $description;
+
+    public function __construct(?string $title = null, ?string $description = null)
+    {
+        $this->title = $title;
+        $this->description = $description;
+    }
 
     public function getId(): ?int
     {

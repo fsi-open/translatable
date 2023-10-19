@@ -24,8 +24,6 @@ interface TranslationManager
      */
     public function sanitizeTranslationValue($value);
     /**
-     * @param object $translation
-     * @param string $field
      * @param mixed $translatableValue
      * @return mixed
      */

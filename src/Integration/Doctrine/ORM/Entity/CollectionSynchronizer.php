@@ -18,12 +18,9 @@ use FSi\Component\Translatable\PropertyConfiguration;
 final class CollectionSynchronizer
 {
     /**
-     * @param object $translation
      * @param ClassMetadata<object> $metadata
-     * @param string $collectionField
      * @param Collection<string|int, object> $translatableCollection
      * @param Collection<string|int, object> $translationCollection
-     * @return void
      */
     public static function synchronize(
         object $translation,

@@ -170,10 +170,8 @@ final class TranslationManager implements Translatable\TranslationManager
     }
 
     /**
-     * @param array<PropertyConfiguration> $propertyConfigurations
-     * @param object $translation
-     * @param array<class-string> $embeddableClasses
-     * @return bool
+     * @param array<string, PropertyConfiguration> $propertyConfigurations
+     * @param array<string, class-string> $embeddableClasses
      */
     private function areAllTranslationFieldsEmpty(
         array $propertyConfigurations,

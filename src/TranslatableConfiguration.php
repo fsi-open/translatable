@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FSi\Component\Translatable;
 
+use FSi\Component\Translatable\Exception\ClassDoesNotExistException;
+
 final class TranslatableConfiguration
 {
     /**
@@ -28,12 +30,8 @@ final class TranslatableConfiguration
 
     /**
      * @param class-string $translatableClass
-     * @param string $localeField
-     * @param bool $disabledAutoTranslationsUpdate
      * @param class-string $translationsClass
-     * @param string $translationsLocaleField
-     * @param string $translationsPropertyField
-     * @param array<string> $properties
+     * @param list<string> $properties
      */
     public function __construct(
         string $translatableClass,
@@ -44,6 +42,8 @@ final class TranslatableConfiguration
         string $translationsPropertyField,
         array $properties
     ) {
+        $this->assertValidClassAndLocaleField($translatableClass, $localeField);
+
         $this->translatableClass = $translatableClass;
         $this->localeField = $localeField;
         $this->disabledAutoTranslationsUpdate = $disabledAutoTranslationsUpdate;
@@ -63,6 +63,8 @@ final class TranslatableConfiguration
             },
             []
         );
+
+        TranslatableConfigurationValidator::validate($this);
     }
 
     public function isPropertyTranslatable(string $property): bool
@@ -99,7 +101,7 @@ final class TranslatableConfiguration
     }
 
     /**
-     * @return array<PropertyConfiguration>
+     * @return array<string, PropertyConfiguration>
      */
     public function getPropertyConfigurations(): array
     {
@@ -116,5 +118,16 @@ final class TranslatableConfiguration
         }
 
         return $this->localeFieldReflection;
+    }
+
+    private function assertValidClassAndLocaleField(
+        string $entityClass,
+        string $localeField
+    ): void {
+        if (false === class_exists($entityClass)) {
+            throw ClassDoesNotExistException::create($entityClass);
+        }
+
+        PropertyConfiguration::verifyPropertyExists($entityClass, $localeField);
     }
 }

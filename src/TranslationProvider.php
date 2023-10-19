@@ -16,7 +16,6 @@ interface TranslationProvider
     public function createForEntityAndLocale(object $entity, string $locale): object;
     public function findForEntityAndLocale(object $entity, string $locale): ?object;
     /**
-     * @param object $entity
      * @return array<object>
      */
     public function findAllForEntity(object $entity): array;

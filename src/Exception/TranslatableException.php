@@ -9,12 +9,10 @@
 
 declare(strict_types=1);
 
-namespace FSi\Component\Translatable;
+namespace FSi\Component\Translatable\Exception;
 
-interface ClassProvider
+use Exception;
+
+abstract class TranslatableException extends Exception
 {
-    /**
-     * @return class-string
-     */
-    public function forObject(object $object): string;
 }

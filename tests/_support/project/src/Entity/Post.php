@@ -14,9 +14,15 @@ namespace Tests\FSi\App\Entity;
 class Post
 {
     private ?int $id = null;
-    private ?string $locale = null;
-    private ?string $title = null;
-    private ?string $content = null;
+    private ?string $locale;
+    private ?string $title;
+    private ?string $content;
+
+    public function __construct(?string $title = null, ?string $content = null)
+    {
+        $this->title = $title;
+        $this->content = $content;
+    }
 
     public function getId(): ?int
     {

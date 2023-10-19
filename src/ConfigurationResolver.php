@@ -22,12 +22,10 @@ use function iterator_to_array;
 final class ConfigurationResolver
 {
     private ClassProvider $classProvider;
-
     /**
      * @var array<class-string, TranslatableConfiguration>
      */
     private array $translatableConfigurations = [];
-
     /**
      * @var array<class-string, TranslationConfiguration>
      */

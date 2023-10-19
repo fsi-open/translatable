@@ -12,14 +12,16 @@ declare(strict_types=1);
 namespace FSi\Component\Translatable;
 
 use Assert\Assertion;
+use FSi\Component\Translatable\Exception\ClassDoesNotExistException;
 use ReflectionClass;
 
 use function array_walk;
+use function class_exists;
 
 final class TranslationConfiguration
 {
     /**
-     * @var class-string
+     * @var class-string<object>
      */
     private string $entityClass;
     private string $localeField;
@@ -32,10 +34,8 @@ final class TranslationConfiguration
     private array $propertyConfigurations;
 
     /**
-     * @param class-string $entityClass
-     * @param string $localeField
-     * @param string $relationField
-     * @param array<string> $properties
+     * @param class-string<object> $entityClass
+     * @param list<string> $properties
      */
     public function __construct(
         string $entityClass,
@@ -43,6 +43,8 @@ final class TranslationConfiguration
         string $relationField,
         array $properties
     ) {
+        $this->assertValidClassAndLocaleField($entityClass, $localeField);
+
         $this->entityClass = $entityClass;
         $this->localeField = $localeField;
         $this->relationField = $relationField;
@@ -63,7 +65,7 @@ final class TranslationConfiguration
     }
 
     /**
-     * @return class-string
+     * @return class-string<object>
      */
     public function getEntityClass(): string
     {
@@ -101,8 +103,6 @@ final class TranslationConfiguration
     }
 
     /**
-     * @param object $entity
-     * @param string $property
      * @return mixed
      */
     public function getValueForProperty(object $entity, string $property)
@@ -112,10 +112,7 @@ final class TranslationConfiguration
     }
 
     /**
-     * @param object $entity
-     * @param string $property
      * @param mixed $value
-     * @return void
      */
     public function setValueForProperty(object $entity, string $property, $value): void
     {
@@ -153,5 +150,16 @@ final class TranslationConfiguration
         }
 
         return $this->relationPropertyReflection;
+    }
+
+    private function assertValidClassAndLocaleField(
+        string $entityClass,
+        string $localeField
+    ): void {
+        if (false === class_exists($entityClass)) {
+            throw ClassDoesNotExistException::create($entityClass);
+        }
+
+        PropertyConfiguration::verifyPropertyExists($entityClass, $localeField);
     }
 }

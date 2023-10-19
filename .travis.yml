@@ -27,4 +27,5 @@ script:
     - composer sniffer
     - composer cept build
     - composer stan
-    - composer cept run
+    - composer cept run functional
+    - composer cept run unit

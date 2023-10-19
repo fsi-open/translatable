@@ -12,11 +12,18 @@ declare(strict_types=1);
 namespace FSi\Component\Translatable;
 
 use Assert\Assertion;
+use FSi\Component\Translatable\Exception\PropertyDoesNotExistException;
+use FSi\Component\Translatable\Exception\UnitializedPropertyValueException;
+use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionProperty;
+use ReflectionType;
+use ReflectionUnionType;
 
 use function array_reduce;
 use function class_parents;
+use function method_exists;
 use function property_exists;
 
 final class PropertyConfiguration
@@ -30,11 +37,37 @@ final class PropertyConfiguration
 
     /**
      * @param class-string $entityClass
-     * @param string $propertyName
+     * @throws InvalidArgumentException
+     * @throws PropertyDoesNotExistException
+     */
+    public static function verifyPropertyExists(string $entityClass, string $propertyName): void
+    {
+        if (true === property_exists($entityClass, $propertyName)) {
+            return;
+        }
+
+        $parents = class_parents($entityClass);
+        Assertion::isArray($parents, "Unable to read parent classes for \"{$entityClass}\"");
+
+        $propertyExistsInAParent = array_reduce(
+            $parents,
+            fn(bool $accumulator, string $parent): bool =>
+                true === $accumulator || property_exists($parent, $propertyName),
+            false
+        );
+
+        if (false === $propertyExistsInAParent) {
+            throw PropertyDoesNotExistException::create($entityClass, $propertyName);
+        }
+    }
+
+    /**
+     * @param class-string $entityClass
      */
     public function __construct(string $entityClass, string $propertyName)
     {
-        $this->verifyPropertyExists($entityClass, $propertyName);
+        self::verifyPropertyExists($entityClass, $propertyName);
+
         $this->entityClass = $entityClass;
         $this->propertyName = $propertyName;
         $this->propertyReflection = null;
@@ -46,24 +79,34 @@ final class PropertyConfiguration
     }
 
     /**
-     * @param object $entity
      * @return mixed
      */
     public function getValueForEntity(object $entity)
     {
         Assertion::isInstanceOf($entity, $this->entityClass);
-        return $this->getPropertyReflection()->getValue($entity);
+        $propertyReflection = $this->getPropertyReflection();
+        if (false === $propertyReflection->isInitialized($entity)) {
+            return $this->handleUninitializedProperty($propertyReflection);
+        }
+
+        return $propertyReflection->getValue($entity);
     }
 
     /**
-     * @param object $entity
      * @param mixed $value
-     * @return void
      */
     public function setValueForEntity(object $entity, $value): void
     {
         Assertion::isInstanceOf($entity, $this->entityClass);
         $this->getPropertyReflection()->setValue($entity, $value);
+    }
+
+    /**
+     * @return ReflectionNamedType|ReflectionUnionType|ReflectionType|null
+     */
+    public function getType()
+    {
+        return $this->getPropertyReflection()->getType();
     }
 
     private function getPropertyReflection(): ReflectionProperty
@@ -80,43 +123,39 @@ final class PropertyConfiguration
             } while ($reflectionClass = $reflectionClass->getParentClass());
         }
 
-        Assertion::notNull(
-            $this->propertyReflection,
-            $this->nonExistantFieldExceptionMessage($this->entityClass, $this->propertyName)
-        );
+        if (null === $this->propertyReflection) {
+            throw PropertyDoesNotExistException::create($this->entityClass, $this->propertyName);
+        }
 
         return $this->propertyReflection;
     }
 
     /**
-     * @param class-string $entityClass
-     * @param string $propertyName
-     * @return void
+     * @return null
+     * @throws UnitializedPropertyValueException
      */
-    private function verifyPropertyExists(string $entityClass, string $propertyName): void
+    private function handleUninitializedProperty(ReflectionProperty $propertyReflection)
     {
-        if (true === property_exists($entityClass, $propertyName)) {
-            return;
+        if (
+            true === method_exists($propertyReflection, 'hasDefaultValue')
+            && true === method_exists($propertyReflection, 'getDefaultValue')
+            && true === $propertyReflection->hasDefaultValue()
+        ) {
+            return $propertyReflection->getDefaultValue();
         }
 
-        $parents = class_parents($entityClass);
-        Assertion::isArray($parents, "Unable to read parent classes for \"{$entityClass}\"");
+        $type = $propertyReflection->getType();
+        if (null === $type) {
+            return null;
+        }
 
-        $propertyExistsInAParent = array_reduce(
-            $parents,
-            fn(bool $accumulator, string $parent): bool =>
-                true === $accumulator || property_exists($parent, $propertyName),
-            false
-        );
+        if (false === $type->allowsNull()) {
+            throw UnitializedPropertyValueException::create(
+                $this->entityClass,
+                $propertyReflection->getName()
+            );
+        }
 
-        Assertion::true(
-            $propertyExistsInAParent,
-            $this->nonExistantFieldExceptionMessage($entityClass, $propertyName)
-        );
-    }
-
-    private function nonExistantFieldExceptionMessage(string $entityClass, string $propertyName): string
-    {
-        return "Neiter class \"{$entityClass}\" nor any of it's parent have the property \"{$propertyName}\"";
+        return null;
     }
 }

@@ -18,7 +18,6 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Persistence\Proxy;
 use FSi\Component\Translatable\ConfigurationResolver;
 use FSi\Component\Translatable\Entity\TranslationCleaner;
@@ -52,7 +51,7 @@ final class EntitySubscriber implements EventSubscriber
     }
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     public function getSubscribedEvents(): array
     {
