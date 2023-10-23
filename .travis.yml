@@ -16,6 +16,7 @@ matrix:
               - COMPOSER_FLAGS='--prefer-lowest'
         - php: 8.0
         - php: 8.1
+        - php: 8.2
 
 install:
     - phpenv config-rm xdebug.ini
