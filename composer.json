@@ -32,8 +32,8 @@
         "doctrine/common": "^3.1.2",
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/orm": "^2.9",
-        "doctrine/persistence": "^2.0",
-        "fsi/files": "^2.0|>=2.0.2",
+        "doctrine/persistence": "^2.0|^3.0",
+        "fsi/files": "^2.0.4",
         "guzzlehttp/psr7": "^1.8",
         "monolog/monolog": "^1.25",
         "nyholm/psr7": "^1.4",
@@ -63,6 +63,9 @@
         "symfony/twig-bundle": "^4.4|^5.4|^6.0",
         "symfony/validator": "^4.4|^5.4|^6.0",
         "twig/twig": "^3.7"
+    },
+    "conflicts": {
+        "doctrine/persistence": "<2.0"
     },
     "scripts": {
         "sniffer": "vendor/bin/phpcs",
