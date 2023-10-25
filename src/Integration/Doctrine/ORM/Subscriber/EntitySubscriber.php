@@ -60,7 +60,7 @@ final class EntitySubscriber implements EventSubscriber
 
     public function postLoad(LifecycleEventArgs $event): void
     {
-        $object = $event->getEntity();
+        $object = $event->getObject();
         if (false === $this->isTranslatable($object)) {
             return;
         }
@@ -71,7 +71,7 @@ final class EntitySubscriber implements EventSubscriber
 
     public function preRemove(LifecycleEventArgs $event): void
     {
-        $object = $event->getEntity();
+        $object = $event->getObject();
         if (false === $this->isTranslatable($object)) {
             return;
         }
@@ -82,7 +82,12 @@ final class EntitySubscriber implements EventSubscriber
 
     public function preFlush(PreFlushEventArgs $eventArgs): void
     {
-        $manager = $eventArgs->getEntityManager();
+        /** @var EntityManagerInterface $manager */
+        $manager = true === method_exists($eventArgs, 'getObjectManager')
+            ? $eventArgs->getObjectManager()
+            : $eventArgs->getEntityManager()
+        ;
+
         $uow = $manager->getUnitOfWork();
         if (true === $this->isDeepNestedTransaction($manager)) {
             return;
@@ -133,9 +138,14 @@ final class EntitySubscriber implements EventSubscriber
         });
     }
 
-    public function onFlush(OnFlushEventArgs $event): void
+    public function onFlush(OnFlushEventArgs $eventArgs): void
     {
-        $manager = $event->getEntityManager();
+        /** @var EntityManagerInterface $manager */
+        $manager = true === method_exists($eventArgs, 'getObjectManager')
+            ? $eventArgs->getObjectManager()
+            : $eventArgs->getEntityManager()
+        ;
+
         if (true === $this->isDeepNestedTransaction($manager)) {
             return;
         }
