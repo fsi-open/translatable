@@ -13,7 +13,7 @@ namespace FSi\Component\Translatable\Exception;
 
 use function sprintf;
 
-final class UnitializedPropertyValueException extends TranslatableException
+final class UninitializedPropertyValueException extends TranslatableException
 {
     public static function create(string $entityClass, string $propertyName): self
     {

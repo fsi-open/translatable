@@ -18,7 +18,6 @@ final class InvalidEntity
 {
     private ?int $id = null;
     private ?string $locale;
-    private string $nonNullableField = '';
     private ?string $mismatchedField;
     private ?string $undefinedFieldTypeDeclaration;
     /**
@@ -44,16 +43,6 @@ final class InvalidEntity
     public function setLocale(?string $locale): void
     {
         $this->locale = $locale;
-    }
-
-    public function getNonNullableField(): string
-    {
-        return $this->nonNullableField;
-    }
-
-    public function setNonNullableField(string $nonNullableField): void
-    {
-        $this->nonNullableField = $nonNullableField;
     }
 
     public function getMismatchedField(): ?string

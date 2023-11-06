@@ -52,10 +52,10 @@ final class TranslationManager implements Translatable\TranslationManager
             ->getClassMetadata($translationsClass)
         ;
 
-        $propertiesConfiguratios = $translatableConfiguration->getPropertyConfigurations();
+        $propertiesConfigurations = $translatableConfiguration->getPropertyConfigurations();
         array_walk(
-            $propertiesConfiguratios,
-            function (PropertyConfiguration $configuration) use ($translationsClassMetadata, $entity): void {
+            $propertiesConfigurations,
+            static function (PropertyConfiguration $configuration) use ($translationsClassMetadata, $entity): void {
                 $property = $configuration->getPropertyName();
                 $emptyValue = true === $translationsClassMetadata->isCollectionValuedAssociation($property)
                     ? new ArrayCollection()

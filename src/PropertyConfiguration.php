@@ -13,7 +13,7 @@ namespace FSi\Component\Translatable;
 
 use Assert\Assertion;
 use FSi\Component\Translatable\Exception\PropertyDoesNotExistException;
-use FSi\Component\Translatable\Exception\UnitializedPropertyValueException;
+use FSi\Component\Translatable\Exception\UninitializedPropertyValueException;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -132,7 +132,7 @@ final class PropertyConfiguration
 
     /**
      * @return null
-     * @throws UnitializedPropertyValueException
+     * @throws UninitializedPropertyValueException
      */
     private function handleUninitializedProperty(ReflectionProperty $propertyReflection)
     {
@@ -150,7 +150,7 @@ final class PropertyConfiguration
         }
 
         if (false === $type->allowsNull()) {
-            throw UnitializedPropertyValueException::create(
+            throw UninitializedPropertyValueException::create(
                 $this->entityClass,
                 $propertyReflection->getName()
             );

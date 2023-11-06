@@ -14,7 +14,7 @@ namespace FSi\Component\Translatable;
 interface TranslationManager
 {
     public function initializeTranslatableWithNoTranslation(object $entity): void;
-    public function saveTranslation(object $entity): void;
+    public function saveTranslation(object $translation): void;
     public function removeTranslation(object $translation): void;
     public function clearTranslationsForEntity(object $entity): void;
     public function isTranslationEmpty(object $translation): bool;
