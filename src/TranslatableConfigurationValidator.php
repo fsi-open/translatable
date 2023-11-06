@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FSi\Component\Translatable;
 
 use FSi\Component\Translatable\Exception\MismatchedFieldTypeDeclarationException;
-use FSi\Component\Translatable\Exception\MismatchedNullableFieldTypeDeclarationException;
 use FSi\Component\Translatable\Exception\MismatchedUndefinedFieldTypeDeclarationException;
 use FSi\Component\Translatable\Exception\MissingTranslationProperty;
 use ReflectionNamedType;
@@ -121,14 +120,6 @@ final class TranslatableConfigurationValidator
             );
         }
 
-        if ($translatableTypeReflection->allowsNull() !== $translationTypeReflection->allowsNull()) {
-            throw MismatchedNullableFieldTypeDeclarationException::create(
-                $translatableClass,
-                $translationClass,
-                $propertyName
-            );
-        }
-
         $actualTranslatableType = self::sanitizePropertyType($translatableTypeReflection->getName());
         $actualTranslationType = self::sanitizePropertyType($translationTypeReflection->getName());
         if ($actualTranslatableType !== $actualTranslationType) {
@@ -153,14 +144,6 @@ final class TranslatableConfigurationValidator
     ): void {
         if (false === $translationTypeReflection instanceof ReflectionUnionType) {
             throw MismatchedFieldTypeDeclarationException::create(
-                $translatableClass,
-                $translationClass,
-                $propertyName
-            );
-        }
-
-        if ($translatableTypeReflection->allowsNull() !== $translationTypeReflection->allowsNull()) {
-            throw MismatchedNullableFieldTypeDeclarationException::create(
                 $translatableClass,
                 $translationClass,
                 $propertyName

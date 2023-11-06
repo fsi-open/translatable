@@ -14,7 +14,6 @@ namespace Tests\FSi\Component\Translatable;
 use Codeception\Test\Unit;
 use FSi\Component\Translatable\Exception\ClassDoesNotExistException;
 use FSi\Component\Translatable\Exception\MismatchedFieldTypeDeclarationException;
-use FSi\Component\Translatable\Exception\MismatchedNullableFieldTypeDeclarationException;
 use FSi\Component\Translatable\Exception\MismatchedUndefinedFieldTypeDeclarationException;
 use FSi\Component\Translatable\Exception\PropertyDoesNotExistException;
 use FSi\Component\Translatable\TranslatableConfiguration;
@@ -57,26 +56,6 @@ final class TranslatableConfigurationTest extends Unit
             'locale',
             'translatable',
             []
-        );
-    }
-
-    public function testMismatchedNullableFieldTypeDeclaration(): void
-    {
-        $this->expectException(MismatchedNullableFieldTypeDeclarationException::class);
-        $this->expectExceptionMessage(
-            'Both translatable class "Tests\FSi\App\Entity\InvalidEntity" and'
-            . ' translation class "Tests\FSi\App\Entity\InvalidEntity" should'
-            . ' either allow or disallow NULL in property "nonNullableField".'
-        );
-
-        new TranslatableConfiguration(
-            InvalidEntity::class,
-            'locale',
-            false,
-            InvalidEntityTranslation::class,
-            'locale',
-            'entity',
-            ['nonNullableField']
         );
     }
 
