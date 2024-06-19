@@ -19,5 +19,15 @@ parameters:
             message: '#^Parameter \#1 \$errors of method Tests\\FSi\\App\\Controller\\[a-zA-z]{1,}Controller::formErrorsToMessage\(\).{1,}$#'
             path: 'tests/_support/project/src/Controller'
             reportUnmatched: false
-
-
+        -
+            message: '#^PHPDoc tag \@param for parameter \$event contains generic type Doctrine\\Persistence\\Event\\LifecycleEventArgs<Doctrine\\Persistence\\ObjectManager> but class Doctrine\\Persistence\\Event\\LifecycleEventArgs is not generic\.$#'
+            path: 'src/Integration/Doctrine/ORM/Subscriber/EntitySubscriber.php'
+            reportUnmatched: false
+        -
+            message: '#^Call to an undefined method Doctrine\\ORM\\Event\\\w+::getEntityManager\(\)\.$#'
+            path: 'src/Integration/Doctrine/ORM/Subscriber/EntitySubscriber.php'
+            reportUnmatched: false
+        -
+            message: '#.*Symfony\\Component\\Routing\\RouteCollectionBuilder.*#'
+            path: '%currentWorkingDirectory%/tests/_support/project/src/Kernel.php'
+            reportUnmatched: false

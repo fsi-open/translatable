@@ -1,0 +1,10 @@
+---
+framework:
+    default_locale: en
+    secret: fsi_component_translatable_secret
+    test: ~
+    session:
+        handler_id: null
+        cookie_secure: auto
+        cookie_samesite: lax
+        storage_factory_id: session.storage.factory.mock_file # after dropping Symfony 4.4

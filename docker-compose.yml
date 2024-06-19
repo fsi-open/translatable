@@ -3,13 +3,11 @@ version: '3'
 
 services:
     web:
-        build:
-            context: ./docker
-            dockerfile: Dockerfile
+        image: fsiopenpl/docker-php-apache:alpine-8.1
         container_name: translatable
         environment:
-            XDEBUG_CONFIG: 'idekey=PHPSTORM'
-            XDEBUG_MODE: 'off'
+            XDEBUG_CONFIG: 'idekey=PHPSTORM discover_client_host=false client_host=host.docker.internal'
+            XDEBUG_MODE: 'debug'
             PHP_IDE_CONFIG: 'serverName=localhost'
             DOCROOT: '/var/www/application/tests/_support/project/public'
             HOST_UID: 1000
@@ -21,3 +19,5 @@ services:
         volumes:
             - .:/var/www/application
             - ~/.composer:/var/www/.composer
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
