@@ -27,7 +27,9 @@
                  alias="FSi\Component\Translatable\Integration\Doctrine\ORM\ClassProvider"
         />
 
-        <service id="FSi\Component\Translatable\Integration\Doctrine\ORM\ClassProvider" />
+        <service id="FSi\Component\Translatable\Integration\Doctrine\ORM\ClassProvider">
+            <argument type="service" id="Doctrine\Persistence\ManagerRegistry" />
+        </service>
 
         <service id="FSi\Component\Translatable\Integration\Doctrine\ORM\TranslationProvider">
             <argument type="service" id="Doctrine\Persistence\ManagerRegistry" />

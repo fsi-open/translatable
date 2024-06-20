@@ -23,6 +23,8 @@ use Tests\FSi\App\Entity\Article;
 use Tests\FSi\App\Entity\ArticleTranslation;
 use Tests\FSi\App\Entity\Author;
 
+use function get_class;
+
 final class TranslationUpdaterTest extends Unit
 {
     private ConfigurationResolver $entityConfigurationResolver;
@@ -197,7 +199,7 @@ final class TranslationUpdaterTest extends Unit
     protected function _before(): void
     {
         $this->entityConfigurationResolver = new ConfigurationResolver(
-            new ClassProvider(),
+            $this->createClassProvider(),
             [
                 new TranslatableConfiguration(
                     Article::class,
@@ -210,5 +212,15 @@ final class TranslationUpdaterTest extends Unit
                 )
             ]
         );
+    }
+
+    private function createClassProvider(): ClassProvider
+    {
+        $classProvider = $this->createMock(ClassProvider::class);
+        $classProvider->method('forObject')->willReturnCallback(function (object $object): string {
+            return get_class($object);
+        });
+
+        return $classProvider;
     }
 }

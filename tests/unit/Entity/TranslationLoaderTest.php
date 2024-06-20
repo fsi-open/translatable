@@ -46,7 +46,7 @@ final class TranslationLoaderTest extends Unit
             $this->entityConfigurationResolver,
             $translationsProvider,
             $translationManager,
-            new ClassProvider()
+            $this->createClassProvider()
         );
 
         $loader->loadFromLocale($translatable, 'en');
@@ -77,7 +77,7 @@ final class TranslationLoaderTest extends Unit
             $this->entityConfigurationResolver,
             $translationsProvider,
             $translationManager,
-            new ClassProvider()
+            $this->createClassProvider()
         );
         $loader->loadFromLocale($translatable, 'en');
 
@@ -108,7 +108,7 @@ final class TranslationLoaderTest extends Unit
             $this->entityConfigurationResolver,
             $translationsProvider,
             $translationManager,
-            new ClassProvider()
+            $this->createClassProvider()
         );
 
         $loader->loadFromTranslation(
@@ -141,7 +141,7 @@ final class TranslationLoaderTest extends Unit
             $this->entityConfigurationResolver,
             $translationsProvider,
             $translationManager,
-            new ClassProvider()
+            $this->createClassProvider()
         );
 
         $loader->loadFromTranslation(new Article(null, null), new stdClass());
@@ -165,7 +165,7 @@ final class TranslationLoaderTest extends Unit
             $this->entityConfigurationResolver,
             $translationsProvider,
             $translationManager,
-            new ClassProvider()
+            $this->createClassProvider()
         );
 
         $loader->loadFromTranslation(
@@ -191,7 +191,7 @@ final class TranslationLoaderTest extends Unit
             $this->entityConfigurationResolver,
             $translationsProvider,
             $translationManager,
-            new ClassProvider()
+            $this->createClassProvider()
         );
 
         $entity = new Article(null, null);
@@ -207,7 +207,7 @@ final class TranslationLoaderTest extends Unit
     protected function _before(): void
     {
         $this->entityConfigurationResolver = new ConfigurationResolver(
-            new ClassProvider(),
+            $this->createClassProvider(),
             [
                 new TranslatableConfiguration(
                     Article::class,
@@ -220,5 +220,15 @@ final class TranslationLoaderTest extends Unit
                 )
             ]
         );
+    }
+
+    private function createClassProvider(): ClassProvider
+    {
+        $classProvider = $this->createMock(ClassProvider::class);
+        $classProvider->method('forObject')->willReturnCallback(function (object $object): string {
+            return get_class($object);
+        });
+
+        return $classProvider;
     }
 }

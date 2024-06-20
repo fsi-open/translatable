@@ -11,15 +11,29 @@ declare(strict_types=1);
 
 namespace FSi\Component\Translatable\Integration\Doctrine\ORM;
 
-use Doctrine\Common\Util\ClassUtils;
-use FSi\Component;
+use Doctrine\Persistence\ManagerRegistry;
+use FSi\Component\Translatable;
+use RuntimeException;
 
 use function get_class;
 
-final class ClassProvider implements Component\Translatable\ClassProvider
+class ClassProvider implements Translatable\ClassProvider
 {
-    public function forObject(object $object): string
+    private ManagerRegistry $registry;
+
+    public function __construct(ManagerRegistry $registry)
     {
-        return ClassUtils::getRealClass(get_class($object));
+        $this->registry = $registry;
+    }
+
+    public function forObject(object $block): string
+    {
+        $class = get_class($block);
+        $manager = $this->registry->getManagerForClass($class);
+        if (null === $manager) {
+            throw new RuntimeException(sprintf('No manager found for class %s', $class));
+        }
+
+        return $manager->getClassMetadata($class)->getName();
     }
 }
