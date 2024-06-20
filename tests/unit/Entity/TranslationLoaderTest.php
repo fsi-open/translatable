@@ -13,9 +13,9 @@ namespace Tests\FSi\Component\Translatable\Entity;
 
 use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
+use FSi\Component\Translatable\ClassProvider;
 use FSi\Component\Translatable\ConfigurationResolver;
 use FSi\Component\Translatable\Entity\TranslationLoader;
-use FSi\Component\Translatable\Integration\Doctrine\ORM\ClassProvider;
 use FSi\Component\Translatable\TranslatableConfiguration;
 use FSi\Component\Translatable\TranslationManager;
 use FSi\Component\Translatable\TranslationProvider;

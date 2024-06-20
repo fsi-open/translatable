@@ -17,7 +17,7 @@ use RuntimeException;
 
 use function get_class;
 
-class ClassProvider implements Translatable\ClassProvider
+final class ClassProvider implements Translatable\ClassProvider
 {
     private ManagerRegistry $registry;
 
