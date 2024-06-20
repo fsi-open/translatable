@@ -47,17 +47,20 @@ declare(strict_types=1);
 namespace Tests\Entity;
 
 use DateTimeImmutable;
+use FSi\Component\Translatable\Integration\Doctrine\ORM\ProxyTrait;
 
 class Article
 {
+    use ProxyTrait;
+
     private ?int $id = null;
     private ?string $locale = null;
     private ?DateTimeImmutable $publicationDate = null;
     private ?string $title = null;
     private ?string $description = null;
 
-    // getters and setters will probably required for whatever
-    // mechanism you use for modyfing the object, though are not
+    // getters and setters will probably be required for whatever
+    // mechanism you use for modifying the object, though are not
     // required by the component itself
 }
 

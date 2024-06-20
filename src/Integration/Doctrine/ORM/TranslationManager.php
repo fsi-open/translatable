@@ -15,7 +15,7 @@ use Assert\Assertion;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use FSi\Component\Translatable;
@@ -47,7 +47,7 @@ final class TranslationManager implements Translatable\TranslationManager
         $translatableConfiguration = $this->configurationResolver->resolveTranslatable($entity);
         $translationsClass = $translatableConfiguration->getTranslationConfiguration()->getEntityClass();
 
-        /** @var ClassMetadataInfo<object> $translationsClassMetadata */
+        /** @var ClassMetadata<object> $translationsClassMetadata */
         $translationsClassMetadata = $this->getManagerForClass($translationsClass)
             ->getClassMetadata($translationsClass)
         ;
@@ -241,7 +241,7 @@ final class TranslationManager implements Translatable\TranslationManager
             return false;
         }
 
-        /** @var ClassMetadataInfo<object> $metadata */
+        /** @var ClassMetadata<object> $metadata */
         $metadata = $manager->getClassMetadata($class);
         return $metadata->isEmbeddedClass;
     }

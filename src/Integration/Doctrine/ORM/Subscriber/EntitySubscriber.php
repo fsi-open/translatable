@@ -14,10 +14,11 @@ namespace FSi\Component\Translatable\Integration\Doctrine\ORM\Subscriber;
 use Assert\Assertion;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\Persistence\Proxy;
 use FSi\Component\Translatable\ConfigurationResolver;
 use FSi\Component\Translatable\Entity\TranslationCleaner;
@@ -27,6 +28,8 @@ use FSi\Component\Translatable\LocaleProvider;
 
 use function array_walk;
 use function get_class;
+use function in_array;
+use function method_exists;
 
 final class EntitySubscriber implements EventSubscriber
 {
@@ -58,6 +61,9 @@ final class EntitySubscriber implements EventSubscriber
         return [Events::postLoad, Events::preRemove, Events::preFlush, Events::onFlush];
     }
 
+    /**
+     * @param LifecycleEventArgs<ObjectManager> $event
+     */
     public function postLoad(LifecycleEventArgs $event): void
     {
         $object = $event->getObject();
@@ -69,6 +75,9 @@ final class EntitySubscriber implements EventSubscriber
         $this->translationLoader->loadFromLocale($object, $this->localeProvider->getLocale());
     }
 
+    /**
+     * @param LifecycleEventArgs<ObjectManager> $event
+     */
     public function preRemove(LifecycleEventArgs $event): void
     {
         $object = $event->getObject();
@@ -114,13 +123,18 @@ final class EntitySubscriber implements EventSubscriber
         );
 
         $identityMap = $uow->getIdentityMap();
-        array_walk($identityMap, function (array $entities) use ($scheduledInsertions): void {
-            array_walk($entities, function (?object $entity) use ($scheduledInsertions): void {
+        $scheduledDeletions = $uow->getScheduledEntityDeletions();
+        array_walk($identityMap, function (array $entities) use ($scheduledInsertions, $scheduledDeletions): void {
+            array_walk($entities, function (?object $entity) use ($scheduledInsertions, $scheduledDeletions): void {
                 if (null === $entity) {
                     return;
                 }
 
                 if (true === in_array($entity, $scheduledInsertions, true)) {
+                    return;
+                }
+
+                if (true === in_array($entity, $scheduledDeletions, true)) {
                     return;
                 }
 

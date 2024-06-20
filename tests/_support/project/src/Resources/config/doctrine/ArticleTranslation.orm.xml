@@ -17,7 +17,7 @@
 
         <embedded name="author" class="Tests\FSi\App\Entity\Author" />
 
-        <one-to-one field="banner" target-entity="Tests\FSi\App\Entity\Banner" inversed-by="translation">
+        <one-to-one field="banner" target-entity="Tests\FSi\App\Entity\Banner" inversed-by="translation" fetch="EAGER">
             <cascade>
                 <cascade-persist/>
                 <cascade-remove/>

@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace Tests\FSi\App;
 
+use Composer\InstalledVersions;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
 use function sprintf;
@@ -65,6 +67,12 @@ final class Kernel extends HttpKernel\Kernel
         $container->setParameter('container.dumper.inline_class_loader', PHP_VERSION_ID < 70400 || $this->debug);
         $container->setParameter('container.dumper.inline_factories', true);
 
+        if (InstalledVersions::getVersion('symfony/framework-bundle') >= '5.0.0') {
+            $loader->load($configDirectory . '/version_dependent/framework_v5.yaml');
+        } else {
+            $loader->load($configDirectory . '/version_dependent/framework_v4.yaml');
+        }
+
         $loader->load($configDirectory . '/{packages}/*' . self::CONFIG_EXTS, 'glob');
         $loader->load($configDirectory . '/{packages}/' . $this->environment . '/*' . self::CONFIG_EXTS, 'glob');
         $loader->load($configDirectory . '/{services}' . self::CONFIG_EXTS, 'glob');
@@ -73,10 +81,10 @@ final class Kernel extends HttpKernel\Kernel
         $loader->load($configDirectory . '/services.yaml');
     }
 
-//    TODO Use this version after dropping Symfony 4.4
-//    protected function configureRoutes(RoutingConfigurator $routes): void
-
-    protected function configureRoutes(RouteCollectionBuilder $routes): void
+    /**
+     * @param RoutingConfigurator|RouteCollectionBuilder $routes
+     */
+    protected function configureRoutes($routes): void
     {
         $routes->import("{$this->getProjectDir()}/config/routes.yaml");
     }
