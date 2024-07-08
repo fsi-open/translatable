@@ -31,7 +31,7 @@ final class ClassProvider implements Translatable\ClassProvider
         $class = get_class($block);
         $manager = $this->registry->getManagerForClass($class);
         if (null === $manager) {
-            throw new RuntimeException(sprintf('No manager found for class %s', $class));
+            return $class;
         }
 
         return $manager->getClassMetadata($class)->getName();
