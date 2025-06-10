@@ -67,7 +67,7 @@
         "symfony/validator": "^4.4.30|^5.4|^6.0",
         "twig/twig": "^3.7"
     },
-    "conflicts": {
+    "conflict": {
         "doctrine/persistence": "<2.0"
     },
     "scripts": {
