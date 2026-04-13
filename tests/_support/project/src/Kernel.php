@@ -64,7 +64,7 @@ final class Kernel extends HttpKernel\Kernel
     {
         $configDirectory = $this->getProjectDir() . '/config';
         $container->addResource(new FileResource($configDirectory . '/bundles.php'));
-        $container->setParameter('container.dumper.inline_class_loader', PHP_VERSION_ID < 70400 || $this->debug);
+        $container->setParameter('container.dumper.inline_class_loader', $this->debug);
         $container->setParameter('container.dumper.inline_factories', true);
 
         if (InstalledVersions::getVersion('symfony/framework-bundle') >= '5.0.0') {

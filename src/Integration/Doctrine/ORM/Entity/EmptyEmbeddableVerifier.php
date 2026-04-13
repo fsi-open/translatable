@@ -61,6 +61,7 @@ final class EmptyEmbeddableVerifier
                 }
 
                 $embeddedParentData = $embeddedClassesData[$embeddedDeclaredField];
+                /** @var class-string<object> $embeddedParentClass */
                 $embeddedParentClass = (true === $embeddedParentData instanceof EmbeddedClassMapping)
                     ? $embeddedParentData->class
                     : $embeddedParentData['class'];

@@ -12,6 +12,7 @@ parameters:
     excludePaths:
         - 'tests/_support/_generated'
         - 'tests/_support/project/var'
+        - 'tests/_support/project/config'
         - 'tests/_support/UnitTester.php'
     ignoreErrors:
         -
@@ -27,10 +28,26 @@ parameters:
             path: 'src/Integration/Doctrine/ORM/Subscriber/EntitySubscriber.php'
             reportUnmatched: false
         -
+            message: '#^Call to function method_exists\(\) with Doctrine\\ORM\\Event\\\w+ and ''getObjectManager'' will always evaluate to true\.$#'
+            path: 'src/Integration/Doctrine/ORM/Subscriber/EntitySubscriber.php'
+            reportUnmatched: false
+        -
             message: '#.*Symfony\\Component\\Routing\\RouteCollectionBuilder.*#'
             path: '%currentWorkingDirectory%/tests/_support/project/src/Kernel.php'
             reportUnmatched: false
         -
             message: '#Doctrine\\ORM\\Mapping\\EmbeddedClassMapping( not found)?#'
             path: '%currentWorkingDirectory%/src/Integration/Doctrine/ORM/Entity/EmptyEmbeddableVerifier.php'
+            reportUnmatched: false
+        -
+            identifier: 'trait.unused'
+            path: '%currentWorkingDirectory%/src/Integration/Doctrine/ORM/ProxyTrait.php'
+            reportUnmatched: false
+        -
+            identifier: 'property.unusedType'
+            path: 'tests/_support/project/src/Entity'
+            reportUnmatched: false
+        -
+            identifier: 'arrayValues.list'
+            path: 'tests/_support/Module/DbModule.php'
             reportUnmatched: false

@@ -121,9 +121,6 @@ final class PropertyConfiguration
                 }
 
                 $this->propertyReflection = $reflectionClass->getProperty($this->propertyName);
-                if (PHP_VERSION_ID < 80500) {
-                    $this->propertyReflection->setAccessible(true);
-                }
             } while ($reflectionClass = $reflectionClass->getParentClass());
         }
 
@@ -140,11 +137,7 @@ final class PropertyConfiguration
      */
     private function handleUninitializedProperty(ReflectionProperty $propertyReflection)
     {
-        if (
-            true === method_exists($propertyReflection, 'hasDefaultValue')
-            && true === method_exists($propertyReflection, 'getDefaultValue')
-            && true === $propertyReflection->hasDefaultValue()
-        ) {
+        if (true === $propertyReflection->hasDefaultValue()) {
             return $propertyReflection->getDefaultValue();
         }
 
