@@ -34,7 +34,7 @@ final class TranslatableBundle extends Bundle
         }
     }
 
-    public function getContainerExtension(): ?ExtensionInterface
+    public function getContainerExtension(): ExtensionInterface
     {
         if (false === $this->extension instanceof TranslatableExtension) {
             $this->extension = new TranslatableExtension();
