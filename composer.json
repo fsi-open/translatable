@@ -44,7 +44,7 @@
         "phpstan/phpstan": "^2.1.46",
         "phpstan/phpstan-beberlei-assert": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^10.0",
         "psr/http-client": "^1.0",
         "squizlabs/php_codesniffer": "^4.0",
         "symfony/asset": "^4.4.30|^5.4|^6.0|^7.0",
