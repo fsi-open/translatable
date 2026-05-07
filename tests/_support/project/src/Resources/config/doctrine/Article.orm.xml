@@ -12,6 +12,8 @@
 
         <field name="publicationDate" type="datetime_immutable" />
 
+        <one-to-many field="posts" target-entity="Tests\FSi\App\Entity\Post" mapped-by="page" fetch="EXTRA_LAZY" />
+
     </entity>
 
 </doctrine-mapping>

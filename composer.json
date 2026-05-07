@@ -69,6 +69,7 @@
         "twig/twig": "^3.7"
     },
     "conflict": {
+        "doctrine/collections": "<1.7",
         "doctrine/persistence": "<2.0",
         "symfony/property-info": ">=8.0"
     },

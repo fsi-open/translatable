@@ -10,6 +10,8 @@
             <generator strategy="AUTO"/>
         </id>
 
+        <many-to-one field="article" target-entity="Tests\FSi\App\Entity\Article" inversed-by="posts" fetch="LAZY" />
+
     </entity>
 
 </doctrine-mapping>

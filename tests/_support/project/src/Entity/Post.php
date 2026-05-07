@@ -17,6 +17,7 @@ class Post
     private ?string $locale;
     private ?string $title;
     private ?string $content;
+    private ?Article $article = null;
 
     public function __construct(?string $title = null, ?string $content = null)
     {
@@ -57,5 +58,10 @@ class Post
     public function setContent(?string $content): void
     {
         $this->content = $content;
+    }
+
+    public function getArticle(): ?Article
+    {
+        return $this->article;
     }
 }
