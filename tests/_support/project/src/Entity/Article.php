@@ -31,12 +31,17 @@ class Article
      * @var Collection<int, Comment>
      */
     private Collection $comments;
+    /**
+     * @var Collection<int,Post>
+     */
+    private Collection $posts;
 
     public function __construct(?string $title = null, ?string $description = null)
     {
         $this->title = $title;
         $this->description = $description;
         $this->comments = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -140,5 +145,13 @@ class Article
     public function removeComment(Comment $comment): void
     {
         $this->comments->removeElement($comment);
+    }
+
+    /**
+     * @return list<Post>
+     */
+    public function getPosts(): array
+    {
+        return $this->posts->getValues();
     }
 }

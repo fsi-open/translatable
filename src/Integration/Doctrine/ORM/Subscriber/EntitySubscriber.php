@@ -23,11 +23,14 @@ use FSi\Component\Translatable\Entity\TranslationCleaner;
 use FSi\Component\Translatable\Entity\TranslationLoader;
 use FSi\Component\Translatable\Entity\TranslationUpdater;
 use FSi\Component\Translatable\LocaleProvider;
+use ReflectionClass;
 
 use function array_walk;
 use function get_class;
 use function in_array;
 use function method_exists;
+
+use const PHP_VERSION_ID;
 
 final class EntitySubscriber
 {
@@ -233,6 +236,11 @@ final class EntitySubscriber
     {
         if (true === $object instanceof Proxy && false === $object->__isInitialized()) {
             $object->__load();
+        } elseif (PHP_VERSION_ID >= 80400) {
+            $reflector = new ReflectionClass($object);
+            if (true === $reflector->isUninitializedLazyObject($object)) {
+                $reflector->initializeLazyObject($object);
+            }
         }
     }
 }

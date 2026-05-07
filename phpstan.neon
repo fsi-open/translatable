@@ -9,6 +9,7 @@ parameters:
         - src
         - tests
     inferPrivatePropertyTypeFromConstructor: true
+    reportUnmatchedIgnoredErrors: false
     excludePaths:
         - 'tests/_support/_generated'
         - 'tests/_support/project/var'
@@ -18,36 +19,30 @@ parameters:
         -
             message: '#^Parameter \#1 \$errors of method Tests\\FSi\\App\\Controller\\[a-zA-z]{1,}Controller::formErrorsToMessage\(\).{1,}$#'
             path: 'tests/_support/project/src/Controller'
-            reportUnmatched: false
         -
             message: '#^PHPDoc tag \@param for parameter \$event contains generic type Doctrine\\Persistence\\Event\\LifecycleEventArgs<Doctrine\\Persistence\\ObjectManager> but class Doctrine\\Persistence\\Event\\LifecycleEventArgs is not generic\.$#'
             path: 'src/Integration/Doctrine/ORM/Subscriber/EntitySubscriber.php'
-            reportUnmatched: false
         -
             message: '#^Call to an undefined method Doctrine\\ORM\\Event\\\w+::getEntityManager\(\)\.$#'
             path: 'src/Integration/Doctrine/ORM/Subscriber/EntitySubscriber.php'
-            reportUnmatched: false
         -
             message: '#^Call to function method_exists\(\) with Doctrine\\ORM\\Event\\\w+ and ''getObjectManager'' will always evaluate to true\.$#'
             path: 'src/Integration/Doctrine/ORM/Subscriber/EntitySubscriber.php'
-            reportUnmatched: false
+        -
+            message: '#^Call to an undefined method ReflectionClass\<object\>::\w+\(\)\.$#'
+            path: 'src/Integration/Doctrine/ORM/Subscriber/EntitySubscriber.php'
         -
             message: '#.*Symfony\\Component\\Routing\\RouteCollectionBuilder.*#'
             path: '%currentWorkingDirectory%/tests/_support/project/src/Kernel.php'
-            reportUnmatched: false
         -
             message: '#Doctrine\\ORM\\Mapping\\EmbeddedClassMapping( not found)?#'
             path: '%currentWorkingDirectory%/src/Integration/Doctrine/ORM/Entity/EmptyEmbeddableVerifier.php'
-            reportUnmatched: false
         -
             identifier: 'trait.unused'
             path: '%currentWorkingDirectory%/src/Integration/Doctrine/ORM/ProxyTrait.php'
-            reportUnmatched: false
         -
             identifier: 'property.unusedType'
             path: 'tests/_support/project/src/Entity'
-            reportUnmatched: false
         -
             identifier: 'arrayValues.list'
             path: 'tests/_support/Module/DbModule.php'
-            reportUnmatched: false
